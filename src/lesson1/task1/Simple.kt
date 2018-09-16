@@ -63,6 +63,7 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
     println("Root product: $x1x2")
+    print (accountInThreeYears(100, 10))
 }
 
 /**
@@ -122,7 +123,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int) = initial.toDouble() * (1.0 + percent.toDouble() / 100.0)* (1.0 + percent.toDouble() / 100.0)* (1.0 + percent.toDouble() / 100.0)
+fun accountInThreeYears(initial: Int, percent: Int) = initial.toDouble() * (1 + percent.toDouble() / 100)* (1 + percent.toDouble() / 100)* (1 + percent.toDouble() / 100)
 
 /**
  * Простая
