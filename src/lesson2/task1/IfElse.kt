@@ -5,6 +5,7 @@ package lesson2.task1
 import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
+import java.lang.Math
 
 /**
  * Пример
@@ -64,9 +65,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int) = when {
-    age % 10 == 0 || (age % 10 >= 5 && age % 10 <= 9) || (age % 100 >= 11 && age % 100 <= 19) -> "$age лет"
+    age % 10 == 0 || age % 10 in 5..9 || age % 100 in 11..19 -> "$age лет"
     age % 10 == 1 && age % 100 != 11 -> "$age год"
-    age % 10 >= 2 && age % 10 <= 4 && age % 100 != 12 -> "$age года"
+    age % 10 in 2..4 && age % 100 != 12 -> "$age года"
     else -> "Не бывает возраста $age"
 }
 
@@ -90,8 +91,8 @@ fun timeForHalfWay(t1: Double, v1: Double,
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
-fun whichRookThreatens(kingX: Int, kingY: Int,
-                       rookX1: Int, rookY1: Int,
+fun whichRookThreatens(kingX: Int, rookX1: Int,
+                       kingY: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int = TODO()
 
 /**
@@ -117,6 +118,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+
 
 /**
  * Средняя
