@@ -89,8 +89,8 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int) = (CENTIMETERS_IN_
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(grad: Int, min: Int, sec: Int) = grad * RADIANS_IN_DEGREES + min * RADIANS_IN_MINUTE +
-        sec * RADIANS_IN_SECOND
+fun angleInRadian(grad: Int, min: Int, sec: Int) =
+        grad * RADIANS_IN_DEGREES + min * RADIANS_IN_MINUTE + sec * RADIANS_IN_SECOND
 
 /**
  * Тривиальная
@@ -98,8 +98,8 @@ fun angleInRadian(grad: Int, min: Int, sec: Int) = grad * RADIANS_IN_DEGREES + m
  * Найти длину отрезка, соединяющего точки на плоскости с координатами (x1, y1) и (x2, y2).
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
-fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) = Math.sqrt((x1 - x2) * (x1 - x2) +
-        (y1 - y2) * (y1 - y2))
+fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) =
+        Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 
 /**
  * Простая
