@@ -2,6 +2,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import java.lang.Math
 
 /**
  * Пример
@@ -17,7 +18,12 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = TODO()
+fun isNumberHappy(number: Int): Boolean {
+    var FirstSum = number / 1000 + number / 100 % 10
+    var SecondSum = number % 10 + number % 100 / 10
+    return (FirstSum == SecondSum)
+}
+
 
 /**
  * Простая
@@ -26,7 +32,8 @@ fun isNumberHappy(number: Int): Boolean = TODO()
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int) =
+        (x1 == x2) || (y1 == y2) || (Math.abs(x1 - y1) == Math.abs(x2 - y2)) || (x1 + y1 == x2 + y2)
 
 
 /**
@@ -35,7 +42,13 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int = TODO()
+fun daysInMonth(month: Int, year: Int) = when {
+    month <= 7 && month % 2 != 0 || month >= 8 && month % 2 == 0 -> 31
+    month <= 7 && month % 2 == 0 && month != 2 || month >=8 && month % 2 != 0 -> 30
+    month == 2 && year >= 8 && (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) -> 29
+    else -> 28
+}
+
 
 /**
  * Средняя

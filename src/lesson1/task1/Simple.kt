@@ -1,6 +1,11 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
+import lesson2.task1.rookOrBishopThreatens
+import lesson2.task1.timeForHalfWay
+import lesson2.task1.triangleKind
+import lesson2.task2.daysInMonth
+import lesson2.task2.isNumberHappy
 import kotlin.math.*
 import java.lang.Math
 
@@ -62,6 +67,7 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
     println("Root product: $x1x2")
+    print (triangleKind(1.0, 1.5, 1.5))
 }
 
 /**
@@ -89,8 +95,8 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int) = (CENTIMETERS_IN_
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(grad: Int, min: Int, sec: Int) = grad * RADIANS_IN_DEGREES + min * RADIANS_IN_MINUTE +
-        sec * RADIANS_IN_SECOND
+fun angleInRadian(grad: Int, min: Int, sec: Int) =
+        grad * RADIANS_IN_DEGREES + min * RADIANS_IN_MINUTE + sec * RADIANS_IN_SECOND
 
 /**
  * Тривиальная
@@ -98,8 +104,8 @@ fun angleInRadian(grad: Int, min: Int, sec: Int) = grad * RADIANS_IN_DEGREES + m
  * Найти длину отрезка, соединяющего точки на плоскости с координатами (x1, y1) и (x2, y2).
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
-fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) = Math.sqrt((x1 - x2) * (x1 - x2) +
-        (y1 - y2) * (y1 - y2))
+fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) =
+        Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 
 /**
  * Простая

@@ -80,7 +80,17 @@ fun ageDescription(age: Int) = when {
  */
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+                   t3: Double, v3: Double): Double {
+    var firstPart = v1 * t1
+    var secondPart = v2 * t2
+    var thirdPart = v3 * t3
+    var half = (firstPart + secondPart + thirdPart) / 2
+    when {
+        half <= firstPart -> return half / v1
+        half <= firstPart + secondPart -> return (half - firstPart) / v2 + t1
+        else -> return (half - firstPart - secondPart) / v3 + t1 + t2
+    }
+}
 
 /**
  * Простая
@@ -93,7 +103,13 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, rookX1: Int,
                        kingY: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = TODO()
+                       rookX2: Int, rookY2: Int): Int {
+    var answer = 0
+    if (kingX == rookX1 || kingY == rookY1) answer += 1
+    if (kingX == rookX2 || kingY == rookY2) answer += 2
+    return answer
+}
+
 
 /**
  * Простая
@@ -107,7 +123,13 @@ fun whichRookThreatens(kingX: Int, rookX1: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = TODO()
+                          bishopX: Int, bishopY: Int): Int {
+    var answer = 0
+    if (kingX == rookX || kingY == rookY) answer += 1
+    if ((Math.abs(kingX - kingY) == Math.abs(bishopX - bishopY)) || (kingX + kingY == bishopX + bishopY)) answer += 2
+    return answer
+}
+
 
 /**
  * Простая
@@ -117,7 +139,19 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    var biggest = (a, b)
+    var smallest = Math.min(a, Math.min(b, c))
+    if (biggest > a + b + c - biggest) return -1
+    var diff = Math.pow(biggest, 2.0) - Math.pow(smallest, 2.0) - Math.pow(a + b + c - smallest - biggest, 2.0)
+    when
+    {
+        diff < 0.0 -> return 0
+        diff == 0.0 -> return 1
+        diff > 0 -> return 2
+        else -> return -1
+    }
+}
 
 
 /**
@@ -128,5 +162,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int) = when {
+    a <= c && b >= d -> d - c
+    a <= c && b in c..d -> b - c
+    c <= a && b >= d -> d - c
+    c <= a && b in c..d -> b - c
+    else -> -1
+}
 
