@@ -1,11 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
-import lesson2.task1.rookOrBishopThreatens
-import lesson2.task1.timeForHalfWay
-import lesson2.task1.triangleKind
-import lesson2.task2.daysInMonth
-import lesson2.task2.isNumberHappy
 import kotlin.math.*
 import java.lang.Math
 
@@ -67,7 +62,6 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
     println("Root product: $x1x2")
-    print (triangleKind(1.0, 1.5, 1.5))
 }
 
 /**

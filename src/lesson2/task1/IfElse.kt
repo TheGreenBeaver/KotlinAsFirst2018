@@ -140,7 +140,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var biggest = (a, b)
+    var biggest = Math.max(a, Math.max(b, c))
     var smallest = Math.min(a, Math.min(b, c))
     if (biggest > a + b + c - biggest) return -1
     var diff = Math.pow(biggest, 2.0) - Math.pow(smallest, 2.0) - Math.pow(a + b + c - smallest - biggest, 2.0)
@@ -163,10 +163,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int) = when {
-    a <= c && b >= d -> d - c
-    a <= c && b in c..d -> b - c
-    c <= a && b >= d -> d - c
-    c <= a && b in c..d -> b - c
-    else -> -1
+    b < c || d < a -> -1
+    a < c -> Math.min(b, d) - c
+    else -> Math.min(b, d) - a
 }
 

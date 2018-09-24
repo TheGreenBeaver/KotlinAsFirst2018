@@ -58,7 +58,8 @@ fun daysInMonth(month: Int, year: Int) = when {
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean = TODO()
+                 x2: Double, y2: Double, r2: Double) =
+        (Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) + r1 <= r2)
 
 /**
  * Средняя
@@ -69,4 +70,14 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    var smallestBrickSide = Math.min(a, Math.min(b, c))
+    var biggestBrickSide = Math.max(a, Math.max(b, c))
+    var smallestHoleSide = Math.min(r, s)
+    var biggestHoleSide = Math.max(r, s)
+    when {
+        smallestBrickSide > smallestHoleSide -> return false
+        a + b + c - biggestBrickSide - smallestBrickSide > biggestHoleSide -> return false
+        else -> return true
+    }
+}
