@@ -67,14 +67,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var temp = n
-    var answer = 0
-    while (temp > 0)
-    {
-        temp /= 10
-        answer++
+    if (n==0) return 1 else {
+        var temp = n
+        var answer = 0
+        while (temp > 0) {
+            temp /= 10
+            answer++
+        }
+        return answer
     }
-    return answer
 }
 
 /**
@@ -116,7 +117,7 @@ fun minDivisor(n: Int): Int {
     var answer = if (n % 2 == 0) 2 else 3
     while (answer <= Math.sqrt(n.toDouble()) + 1)
         if (n % answer == 0) break else answer += 2
-    return answer
+    if (n % answer == 0) return answer else return n
 }
 
 /**

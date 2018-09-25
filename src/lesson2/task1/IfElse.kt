@@ -126,7 +126,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           bishopX: Int, bishopY: Int): Int {
     var answer = 0
     if (kingX == rookX || kingY == rookY) answer += 1
-    if ((Math.abs(kingX - kingY) == Math.abs(bishopX - bishopY)) || (kingX + kingY == bishopX + bishopY)) answer += 2
+    if ((kingX - kingY == bishopX - bishopY) || (kingX + kingY == bishopX + bishopY)) answer += 2
     return answer
 }
 
