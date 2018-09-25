@@ -101,8 +101,7 @@ fun timeForHalfWay(t1: Double, v1: Double,
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
-fun whichRookThreatens(kingX: Int, rookX1: Int,
-                       kingY: Int, rookY1: Int,
+fun whichRookThreatens(kingX: Int, kingY: Int, rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
     var answer = 0
     if (kingX == rookX1 || kingY == rookY1) answer += 1
