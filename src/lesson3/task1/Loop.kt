@@ -67,15 +67,14 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    if (n==0) return 1 else {
-        var temp = Math.abs(n)
-        var answer = 0
-        while (temp > 0) {
-            temp /= 10
-            answer++
-        }
-        return answer
+    if (n==0) return 1
+    var temp = Math.abs(n)
+    var answer = 0
+    while (temp > 0) {
+        temp /= 10
+        answer++
     }
+    return answer
 }
 
 /**
@@ -89,15 +88,12 @@ fun fib(n: Int): Int {
     var prePreviousNum = 1
     var answer = 0
     if (n in 1..2) return 1
-    else {
-        for (i in 3..n)
-        {
-            answer = previousNum + prePreviousNum
-            prePreviousNum = previousNum
-            previousNum = answer
-        }
-        return answer
+    for (i in 3..n) {
+        answer = previousNum + prePreviousNum
+        prePreviousNum = previousNum
+        previousNum = answer
     }
+    return answer
 }
 
 /**
@@ -116,7 +112,7 @@ fun lcm(m: Int, n: Int): Int = TODO()
 fun minDivisor(n: Int): Int {
     var answer = if (n % 2 == 0) 2 else 3
     while (answer <= Math.sqrt(n.toDouble()) + 1)
-        if (n % answer == 0) break else answer += 2
+        if (n % answer == 0) return answer else answer += 2
     if (n % answer == 0) return answer else return n
 }
 

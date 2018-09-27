@@ -19,9 +19,9 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    var FirstSum = number / 1000 + number / 100 % 10
-    var SecondSum = number % 10 + number % 100 / 10
-    return (FirstSum == SecondSum)
+    var firstSum = number / 1000 + number / 100 % 10
+    var secondSum = number % 10 + number % 100 / 10
+    return (firstSum == secondSum)
 }
 
 
@@ -43,9 +43,9 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int) =
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int) = when {
-    month <= 7 && month % 2 != 0 || month >= 8 && month % 2 == 0 -> 31
-    month <= 7 && month % 2 == 0 && month != 2 || month >=8 && month % 2 != 0 -> 30
     month == 2 && year >= 8 && (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) -> 29
+    month <= 7 && month % 2 != 0 || month >= 8 && month % 2 == 0 -> 31
+    month <= 7 && month % 2 == 0 || month >= 8 && month % 2 != 0 -> 30
     else -> 28
 }
 
@@ -71,10 +71,10 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var smallestBrickSide = Math.min(a, Math.min(b, c))
-    var biggestBrickSide = Math.max(a, Math.max(b, c))
-    var smallestHoleSide = Math.min(r, s)
-    var biggestHoleSide = Math.max(r, s)
+    var smallestBrickSide = minOf(a, b, c)
+    var biggestBrickSide = maxOf(a, b, c)
+    var smallestHoleSide = minOf(r, s)
+    var biggestHoleSide = maxOf(r, s)
     when {
         smallestBrickSide > smallestHoleSide -> return false
         a + b + c - biggestBrickSide - smallestBrickSide > biggestHoleSide -> return false

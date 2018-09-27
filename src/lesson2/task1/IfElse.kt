@@ -66,8 +66,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  */
 fun ageDescription(age: Int) = when {
     age % 10 == 0 || age % 10 in 5..9 || age % 100 in 11..19 -> "$age лет"
-    age % 10 == 1 && age % 100 != 11 -> "$age год"
-    age % 10 in 2..4 && age % 100 != 12 -> "$age года"
+    age % 10 == 1 -> "$age год"
+    age % 10 in 2..4 -> "$age года"
     else -> "Не бывает возраста $age"
 }
 
@@ -85,10 +85,10 @@ fun timeForHalfWay(t1: Double, v1: Double,
     var secondPart = v2 * t2
     var thirdPart = v3 * t3
     var half = (firstPart + secondPart + thirdPart) / 2
-    when {
-        half <= firstPart -> return half / v1
-        half <= firstPart + secondPart -> return (half - firstPart) / v2 + t1
-        else -> return (half - firstPart - secondPart) / v3 + t1 + t2
+    return when {
+        half <= firstPart -> half / v1
+        half <= firstPart + secondPart -> (half - firstPart) / v2 + t1
+        else -> (half - firstPart - secondPart) / v3 + t1 + t2
     }
 }
 
@@ -139,16 +139,15 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var biggest = Math.max(a, Math.max(b, c))
-    var smallest = Math.min(a, Math.min(b, c))
+    var biggest = maxOf(a, b, c)
+    var smallest = minOf(a, b, c)
     if (biggest > a + b + c - biggest) return -1
     var diff = Math.pow(biggest, 2.0) - Math.pow(smallest, 2.0) - Math.pow(a + b + c - smallest - biggest, 2.0)
-    when
-    {
-        diff < 0.0 -> return 0
-        diff == 0.0 -> return 1
-        diff > 0 -> return 2
-        else -> return -1
+    return when {
+        diff < 0.0 -> 0
+        diff == 0.0 -> 1
+        diff > 0 -> 2
+        else -> -1
     }
 }
 
@@ -161,9 +160,5 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int) = when {
-    b < c || d < a -> -1
-    a < c -> Math.min(b, d) - c
-    else -> Math.min(b, d) - a
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int) = if (b < c || d < a) -1 else minOf(b, d) - maxOf(a, c)
 
