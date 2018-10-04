@@ -67,7 +67,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    if (n==0) return 1
+    if (n == 0) return 1
     var temp = Math.abs(n)
     var answer = 0
     while (temp > 0) {
@@ -102,7 +102,11 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun gcd(m: Int, n: Int): Int {
+    return if (n == 0) m else gcd (n, m % n)
+}
+
+fun lcm(m: Int, n: Int) = m * n / gcd(m, n)
 
 /**
  * Простая
@@ -121,7 +125,15 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var answer = n
+    for (i in n / 2 downTo 1)
+    {
+        answer = i
+        if (n % answer == 0) break
+    }
+    return answer
+}
 
 /**
  * Простая
@@ -130,7 +142,7 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int) = gcd(m, n) == 1
 
 /**
  * Простая
