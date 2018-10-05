@@ -143,7 +143,15 @@ fun isCoPrime(m: Int, n: Int) = gcd(m, n) == 1
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    var answer = false
+    for (i in m..n)
+        if (Math.sqrt(i.toDouble()) * 10 % 10 == 0.0) {
+            answer = true
+            break
+        }
+    return answer
+}
 
 /**
  * Средняя
@@ -161,7 +169,15 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var temp = x
+    var answer = 0
+    while (temp != 1) {
+        if (temp % 2 ==0) temp /= 2 else temp = temp * 3 + 1
+        answer++
+    }
+    return answer
+}
 
 /**
  * Средняя
@@ -170,7 +186,19 @@ fun collatzSteps(x: Int): Int = TODO()
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var answer = x
+    var add: Double
+    var multiplier = -1
+    var powAndFactorial = 3.0
+    do {
+        add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
+        multiplier *= -1
+        powAndFactorial += 2
+        answer += add
+    } while (Math.abs(add) >= eps)
+    return answer
+}
 
 /**
  * Средняя
@@ -179,7 +207,19 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var answer = 1.0
+    var add: Double
+    var multiplier = -1
+    var powAndFactorial = 2.0
+    do {
+        add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
+        multiplier *= -1
+        powAndFactorial += 2
+        answer += add
+    } while (Math.abs(add) >= eps)
+    return answer
+}
 
 /**
  * Средняя
