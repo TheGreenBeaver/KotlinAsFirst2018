@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import kotlin.math.PI
 import kotlin.math.sqrt
 
 /**
@@ -179,6 +180,7 @@ fun collatzSteps(x: Int): Int {
     return answer
 }
 
+fun lesserAngle (angle: Double) = angle % (2 * PI)
 /**
  * Средняя
  *
@@ -187,16 +189,17 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var answer = x
+    var angle = lesserAngle(x)
+    var answer = angle
     var add: Double
     var multiplier = -1
     var powAndFactorial = 3.0
     do {
-        add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
+        add = multiplier * Math.pow(angle, powAndFactorial) / factorial(powAndFactorial.toInt())
         multiplier *= -1
         powAndFactorial += 2
         answer += add
-    } while (Math.abs(add) >= eps)
+    } while (Math.abs(add) > eps)
     return answer
 }
 
@@ -208,16 +211,17 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
+    var angle = lesserAngle(x)
+    var add: Double
     var answer = 1.0
     var multiplier = -1.0
     var powAndFactorial = 2.0
-    var add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
-    while (Math.abs(add) >= eps) {
-        add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
+    do {
+        add = multiplier * Math.pow(angle, powAndFactorial) / factorial(powAndFactorial.toInt())
         multiplier *= -1.0
         powAndFactorial += 2.0
         answer += add
-    }
+    } while (Math.abs(add) > eps)
     return answer
 }
 
