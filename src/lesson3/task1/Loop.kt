@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.sqrt
 
@@ -290,7 +291,18 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var digitsAlreadyWritten = 0
+    var lastSqr = 0
+    var currentNumber = 1
+    while (digitsAlreadyWritten < n) {
+        lastSqr = sqr(currentNumber)
+        digitsAlreadyWritten += digitNumber(lastSqr)
+        currentNumber++
+    }
+    var index = digitsAlreadyWritten - n + 1
+    return lastSqr % Math.pow(10.0, index.toDouble()).toInt() / Math.pow(10.0, (index - 1).toDouble()).toInt()
+}
 
 /**
  * Сложная
@@ -301,4 +313,18 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    if (n <= 2) return 1
+    var digitsAlreadyWritten = 2
+    var previousNum = 1
+    var prePreviousNum = 1
+    var lastFib = 0
+    while (digitsAlreadyWritten < n) {
+        lastFib = previousNum + prePreviousNum
+        digitsAlreadyWritten += digitNumber(lastFib)
+        prePreviousNum = previousNum
+        previousNum = lastFib
+    }
+    var index = digitsAlreadyWritten - n + 1
+    return lastFib % Math.pow(10.0, index.toDouble()).toInt() / Math.pow(10.0, (index - 1).toDouble()).toInt()
+}
