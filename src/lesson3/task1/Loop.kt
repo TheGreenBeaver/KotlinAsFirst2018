@@ -115,7 +115,7 @@ fun lcm(m: Int, n: Int) = m * n / gcd(m, n)
  */
 fun minDivisor(n: Int): Int {
     var answer = if (n % 2 == 0) 2 else 3
-    while (answer <= Math.sqrt(n.toDouble()) + 1)
+    while (answer <= sqrt(n.toDouble()) + 1)
         if (n % answer == 0) return answer else answer += 2
     if (n % answer == 0) return answer else return n
 }
@@ -146,7 +146,7 @@ fun isCoPrime(m: Int, n: Int) = gcd(m, n) == 1
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var answer = false
     for (i in m..n)
-        if (Math.sqrt(i.toDouble()) * 10 % 10 == 0.0) {
+        if (sqrt(i.toDouble()) * 10 % 10 == 0.0) {
             answer = true
             break
         }
@@ -209,15 +209,15 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var answer = 1.0
-    var add: Double
-    var multiplier = -1
+    var multiplier = -1.0
     var powAndFactorial = 2.0
-    do {
+    var add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
+    while (Math.abs(add) >= eps) {
         add = multiplier * Math.pow(x, powAndFactorial) / factorial(powAndFactorial.toInt())
-        multiplier *= -1
-        powAndFactorial += 2
+        multiplier *= -1.0
+        powAndFactorial += 2.0
         answer += add
-    } while (Math.abs(add) >= eps)
+    }
     return answer
 }
 
@@ -228,7 +228,19 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var temp = n
+    var answer = 0
+    var multiplier = 1
+    var divisor = Math.pow(10.0, digitNumber(n).toDouble() - 1.0).toInt()
+    while (temp > 0) {
+        answer += temp / divisor * multiplier
+        temp %= divisor
+        multiplier *= 10
+        divisor /= 10
+    }
+    return answer
+}
 
 /**
  * Средняя
@@ -239,7 +251,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int) = n == revert(n)
 
 /**
  * Средняя
@@ -249,7 +261,21 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var temp = n / 10
+    var answer = false
+    var previous = n % 10
+    while (temp > 0)
+        if (previous == temp % 10) {
+            previous = temp % 10
+            temp /= 10
+        }
+        else {
+            answer = true
+            break
+        }
+    return answer
+}
 
 /**
  * Сложная

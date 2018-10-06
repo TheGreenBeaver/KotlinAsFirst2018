@@ -11,9 +11,9 @@ val CENTIMETERS_IN_VERSHOK = 4.445
 val VERSHOKS_IN_ARSHIN = 16
 val VERSHOKS_IN_SAGENE = 48
 val CENTIMETERS_IN_METER = 100
-val RADIANS_IN_DEGREES = Math.PI / 180
-val RADIANS_IN_MINUTE = Math.PI / 10800
-val RADIANS_IN_SECOND = Math.PI / 648000
+val RADIANS_IN_DEGREES = PI / 180
+val RADIANS_IN_MINUTE = PI / 10800
+val RADIANS_IN_SECOND = PI / 648000
 
 /**
  * Пример
@@ -99,7 +99,7 @@ fun angleInRadian(grad: Int, min: Int, sec: Int) =
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) =
-        Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+        sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 
 /**
  * Простая

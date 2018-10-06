@@ -3,9 +3,8 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
 import java.lang.Math
+import kotlin.math.sqrt
 
 /**
  * Пример
@@ -53,7 +52,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
     // 4
     val y1 = (-b + sqrt(d)) / (2 * a)
     val y2 = (-b - sqrt(d)) / (2 * a)
-    val y3 = max(y1, y2)       // 5
+    val y3 = maxOf(y1, y2)       // 5
     if (y3 < 0.0) return Double.NaN // 6
     return -sqrt(y3)           // 7
 }
