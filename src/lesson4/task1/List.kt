@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import kotlin.math.sqrt
 
 /**
@@ -115,14 +116,20 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    if (v.isEmpty()) return 0.0
+    var answer = 0.0
+    for (i in 0 until v.size)
+        answer += sqr(v[i])
+    return sqrt(answer)
+}
 
 /**
  * Простая
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>) = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -132,7 +139,13 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    var center = mean(list)
+    for (i in 0 until list.size)
+        list[i] -= center
+    return list
+}
 
 /**
  * Средняя
@@ -141,7 +154,12 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double = TODO()
+fun times(a: List<Double>, b: List<Double>): Double {
+    var answer = 0.0
+    for (i in 0 until a.size)
+        answer += a[i] * b[i]
+    return answer
+}
 
 /**
  * Средняя
@@ -151,7 +169,13 @@ fun times(a: List<Double>, b: List<Double>): Double = TODO()
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = TODO()
+fun polynom(p: List<Double>, x: Double): Double {
+    if (p.isEmpty()) return 0.0
+    var answer = 0.0
+    for (i in 0 until p.size)
+        answer += p[i] * Math.pow(x, i.toDouble())
+    return answer
+}
 
 /**
  * Средняя
@@ -163,7 +187,12 @@ fun polynom(p: List<Double>, x: Double): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Double>): MutableList<Double> = TODO()
+fun accumulate(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    for (i in 1 until list.size)
+        list[i] += list[i-1]
+    return list
+}
 
 /**
  * Средняя
@@ -239,4 +268,90 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var tripletNumber = 1
+    var answer = mutableListOf<String>()
+    var temp = n
+    while (temp > 0) {
+        var currentTriplet = temp % 1000
+        var currentTripletInRussian = ""
+        currentTripletInRussian += when (currentTriplet / 100) {
+            9 -> "девятьсот "
+            8 -> "восемьсот "
+            7 -> "семьсот "
+            6 -> "шестьсот "
+            5 -> "пятьсот "
+            4 -> "четыреста "
+            3 -> "триста "
+            2 -> "двести "
+            1 -> "сто "
+            else -> ""
+        }
+        currentTripletInRussian += when (currentTriplet % 100 / 10) {
+            9 -> "девяносто "
+            8 -> "восемьдесят "
+            7 -> "семьдесят "
+            6 -> "шестьдесят "
+            5 -> "пятьдесят "
+            4 -> "сорок "
+            3 -> "тридцать "
+            2 -> "двадцать "
+            else -> ""
+        }
+        currentTripletInRussian += when (currentTriplet % 100) {
+            19 -> "девятнадцать "
+            18 -> "восемнадцать "
+            17 -> "семнадцать "
+            16 -> "шестнадцать "
+            15 -> "пятнадцать "
+            14 -> "четыренадцать "
+            13 -> "тринадцать "
+            12 -> "двенадцать "
+            11 -> "одиннадцать "
+            10 -> "десять "
+            else -> when (currentTriplet % 10) {
+                9 -> "девять "
+                8 -> "восемь "
+                7 -> "семь "
+                6 -> "шесть "
+                5 -> "пять "
+                4 -> "четыре "
+                3 -> "три "
+                2 -> if (tripletNumber != 2) "два " else "две "
+                1 -> if (tripletNumber != 2) "один " else "одна "
+                else -> ""
+            }
+        }
+        currentTripletInRussian += when (tripletNumber) {
+            2 -> when {
+                currentTriplet % 10 in 5..9 || currentTriplet % 10 == 0 && currentTriplet != 0 ||
+                        currentTriplet % 100 in 11..19 -> "тысяч "
+                currentTriplet % 10 in 2..4 -> "тысячи "
+                currentTriplet % 10 == 1 -> "тысяча "
+                else -> ""
+            }
+            3 -> when {
+                currentTriplet % 10 in 5..9 || currentTriplet % 10 == 0 && currentTriplet != 0 ||
+                        currentTriplet % 100 in 11..19 -> "миллионов "
+                currentTriplet % 10 in 2..4 -> "миллиона "
+                currentTriplet % 10 == 1 -> "миллион "
+                else -> ""
+            }
+            4 -> when {
+                currentTriplet % 10 in 5..9 || currentTriplet % 10 == 0 && currentTriplet != 0 ||
+                        currentTriplet % 100 in 11..19 -> "миллиардов "
+                currentTriplet % 10 in 2..4 -> "миллиарда "
+                currentTriplet % 10 == 1 -> "миллиард "
+                else -> ""
+            }
+            else -> ""
+        }
+        answer.add(currentTripletInRussian)
+        temp /= 1000
+        tripletNumber++
+    }
+    var realAnswer = ""
+    for (i in answer.size - 1 downTo 0)
+        realAnswer += answer[i]
+    return realAnswer
+}

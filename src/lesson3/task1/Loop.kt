@@ -3,6 +3,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.math.PI
+import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
@@ -108,7 +109,7 @@ fun gcd(m: Int, n: Int): Int {
     return if (n == 0) m else gcd (n, m % n)
 }
 
-fun lcm(m: Int, n: Int) = m * n / gcd(m, n)
+fun lcm(m: Int, n: Int) = m / gcd(m, n) * n
 
 /**
  * Простая
@@ -148,7 +149,7 @@ fun isCoPrime(m: Int, n: Int) = gcd(m, n) == 1
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var answer = false
     for (i in m..n)
-        if (sqrt(i.toDouble()) * 10 % 10 == 0.0) {
+        if (ceil(sqrt(i.toDouble())).equals(sqrt(i.toDouble()))) {
             answer = true
             break
         }
