@@ -353,5 +353,5 @@ fun russian(n: Int): String {
     var realAnswer = ""
     for (i in answer.size - 1 downTo 0)
         realAnswer += answer[i]
-    return realAnswer
+    return realAnswer.trim()
 }
