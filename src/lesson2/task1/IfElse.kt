@@ -80,10 +80,10 @@ fun ageDescription(age: Int) = when {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    var firstPart = v1 * t1
-    var secondPart = v2 * t2
-    var thirdPart = v3 * t3
-    var half = (firstPart + secondPart + thirdPart) / 2
+    val firstPart = v1 * t1
+    val secondPart = v2 * t2
+    val thirdPart = v3 * t3
+    val half = (firstPart + secondPart + thirdPart) / 2
     return when {
         half <= firstPart -> half / v1
         half <= firstPart + secondPart -> (half - firstPart) / v2 + t1
@@ -138,10 +138,10 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var biggest = maxOf(a, b, c)
-    var smallest = minOf(a, b, c)
+    val biggest = maxOf(a, b, c)
+    val smallest = minOf(a, b, c)
     if (biggest > a + b + c - biggest) return -1
-    var diff = Math.pow(biggest, 2.0) - Math.pow(smallest, 2.0) - Math.pow(a + b + c - smallest - biggest, 2.0)
+    val diff = Math.pow(biggest, 2.0) - Math.pow(smallest, 2.0) - Math.pow(a + b + c - smallest - biggest, 2.0)
     return when {
         diff < 0.0 -> 0
         diff == 0.0 -> 1

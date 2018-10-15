@@ -140,7 +140,7 @@ fun mean(list: List<Double>) = if (list.isEmpty()) 0.0 else list.sum() / list.si
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var center = mean(list)
+    val center = mean(list)
     for (i in 0 until list.size)
         list[i] -= center
     return list
@@ -349,10 +349,10 @@ fun tripletBody (tripletNumber: Int, currentTriplet: Int): String {
 
 fun russian(n: Int): String {
     var tripletNumber = 1
-    var answer = mutableListOf<String>()
+    val answer = mutableListOf<String>()
     var temp = n
     while (temp > 0) {
-        var currentTriplet = temp % 1000
+        val currentTriplet = temp % 1000
         var currentTripletInRussian = ""
         currentTripletInRussian += tripletBody(tripletNumber, currentTriplet)
         currentTripletInRussian += tripletName(tripletNumber, currentTriplet)
@@ -361,6 +361,5 @@ fun russian(n: Int): String {
         tripletNumber++
     }
     answer.reverse()
-    var realAnswer = answer
-    return (realAnswer.joinToString(separator = " ")).trim()
+    return (answer.joinToString(separator = " ")).trim()
 }

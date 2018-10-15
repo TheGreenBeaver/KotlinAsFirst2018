@@ -3,7 +3,6 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.math.PI
-import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
@@ -120,7 +119,7 @@ fun minDivisor(n: Int): Int {
     var answer = if (n % 2 == 0) 2 else 3
     while (answer <= sqrt(n.toDouble()) + 1)
         if (n % answer == 0) return answer else answer += 2
-    if (n % answer == 0) return answer else return n
+    return if (n % answer == 0) answer else n
 }
 
 /**
@@ -183,7 +182,7 @@ fun lesserAngle (angle: Double) = angle % (2 * PI)
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var angle = lesserAngle(x)
+    val angle = lesserAngle(x)
     var answer = angle
     var add: Double
     var multiplier = -1
@@ -205,7 +204,7 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-    var angle = lesserAngle(x)
+    val angle = lesserAngle(x)
     var add: Double
     var answer = 1.0
     var multiplier = -1.0
@@ -293,7 +292,7 @@ fun squareSequenceDigit(n: Int): Int {
         digitsAlreadyWritten += digitNumber(lastSqr)
         currentNumber++
     }
-    var index = digitsAlreadyWritten - n + 1
+    val index = digitsAlreadyWritten - n + 1
     return lastSqr % Math.pow(10.0, index.toDouble()).toInt() / Math.pow(10.0, (index - 1).toDouble()).toInt()
 }
 
@@ -318,6 +317,6 @@ fun fibSequenceDigit(n: Int): Int {
         prePreviousNum = previousNum
         previousNum = lastFib
     }
-    var index = digitsAlreadyWritten - n + 1
+    val index = digitsAlreadyWritten - n + 1
     return lastFib % Math.pow(10.0, index.toDouble()).toInt() / Math.pow(10.0, (index - 1).toDouble()).toInt()
 }

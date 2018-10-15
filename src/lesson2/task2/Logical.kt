@@ -19,8 +19,8 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    var firstSum = number / 1000 + number / 100 % 10
-    var secondSum = number % 10 + number % 100 / 10
+    val firstSum = number / 1000 + number / 100 % 10
+    val secondSum = number % 10 + number % 100 / 10
     return (firstSum == secondSum)
 }
 
@@ -71,13 +71,13 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var smallestBrickSide = minOf(a, b, c)
-    var biggestBrickSide = maxOf(a, b, c)
-    var smallestHoleSide = minOf(r, s)
-    var biggestHoleSide = maxOf(r, s)
-    when {
-        smallestBrickSide > smallestHoleSide -> return false
-        a + b + c - biggestBrickSide - smallestBrickSide > biggestHoleSide -> return false
-        else -> return true
+    val smallestBrickSide = minOf(a, b, c)
+    val biggestBrickSide = maxOf(a, b, c)
+    val smallestHoleSide = minOf(r, s)
+    val biggestHoleSide = maxOf(r, s)
+    return when {
+        smallestBrickSide > smallestHoleSide -> false
+        a + b + c - biggestBrickSide - smallestBrickSide > biggestHoleSide -> false
+        else -> true
     }
 }
