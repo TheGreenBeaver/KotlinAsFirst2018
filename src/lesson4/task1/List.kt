@@ -4,6 +4,8 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson3.task1.isPrime
+import java.io.File.separator
 import java.lang.Math.pow
 import kotlin.math.sqrt
 
@@ -198,7 +200,18 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var temp = n
+    val answer = mutableListOf<Int>()
+    for (i in 2..n / 2 + 1)
+        if (temp % i == 0)
+            do {
+                answer.add(i)
+                temp /= i
+            } while (temp % i == 0)
+    if (answer.isEmpty()) answer.add(n)
+    return answer
+}
 
 /**
  * Сложная
@@ -207,7 +220,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int) = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя
@@ -216,7 +229,16 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    val answer = mutableListOf<Int>()
+    var temp = n
+    while (temp > 0) {
+        answer.add(temp % base)
+        temp /= base
+    }
+    answer.reverse()
+    return answer
+}
 
 /**
  * Сложная
@@ -226,6 +248,8 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
+val listOfLetters = listOf<String>("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l")
+
 fun convertToString(n: Int, base: Int): String = TODO()
 
 /**
