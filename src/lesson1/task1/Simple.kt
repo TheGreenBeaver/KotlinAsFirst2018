@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
-import lesson4.task1.factorizeToString
 import kotlin.math.*
 import java.lang.Math
 
@@ -63,7 +62,6 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
     println("Root product: $x1x2")
-    print(factorizeToString(1073676289))
 }
 
 /**
@@ -101,7 +99,7 @@ fun angleInRadian(grad: Int, min: Int, sec: Int) =
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double) =
-        sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+        sqrt(sqr(x1 - x2) + sqr (y1 - y2))
 
 /**
  * Простая

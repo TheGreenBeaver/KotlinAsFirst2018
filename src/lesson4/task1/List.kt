@@ -4,8 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import lesson3.task1.isPrime
-import java.io.File.separator
 import java.lang.Math.pow
 import kotlin.math.sqrt
 
@@ -119,12 +117,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var answer = 0.0
-    for (i in 0 until v.size)
-        answer += sqr(v[i])
-    return sqrt(answer)
-}
+fun abs(v: List<Double>) = sqrt(v.sumByDouble { it -> sqr(it) })
 
 /**
  * Простая
@@ -248,9 +241,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-val listOfLetters = listOf<String>("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l")
+val latinLetters = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+        "r", "s", "t", "u", "v", "w", "x", "y", "z")
 
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int) = convert(n, base).joinToString( separator = "",
+        transform = { if (it < 10) it.toString() else latinLetters[it - 10] })
 
 /**
  * Средняя
@@ -275,7 +270,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+
+fun decimalFromString(str: String, base: Int) =
+        decimal(str.map {
+            if ("$it".toIntOrNull() != null) "$it".toInt() else latinLetters.indexOf("$it") + 10
+        }, base)
 
 /**
  * Сложная
@@ -285,6 +284,7 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+
 fun roman(n: Int): String = TODO()
 
 /**
