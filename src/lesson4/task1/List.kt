@@ -285,8 +285,32 @@ fun decimalFromString(str: String, base: Int) =
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+fun generate(convertedNumber: Int, divider: Int, previousDivider: Int,
+             previousLetter: String, currentLetter: String): String {
+    val times = convertedNumber / divider
+    return if (times * divider == previousDivider - divider)
+        currentLetter + previousLetter
+    else {
+        var answer = ""
+        for (i in 0 until times)
+            answer += currentLetter
+        answer
+    }
+}
 
-fun roman(n: Int): String = TODO()
+val romanLetters = listOf("", "M", "D", "C", "L", "X", "V", "I")
+
+val romanDividers = listOf(0, 1000, 500, 100, 50, 10, 5, 1)
+
+fun roman(n: Int): String {
+    var temp = n
+    val answer = mutableListOf<String>()
+    for (i in 1..6) {
+        answer.add(generate(temp, romanDividers[i], romanDividers[i - 1], romanLetters[i - 1], romanLetters[i]))
+        temp %= romanDividers[i]
+    }
+    return answer.joinToString(separator = "")
+}
 
 /**
  * Очень сложная
