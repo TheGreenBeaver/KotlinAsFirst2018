@@ -117,7 +117,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>) = sqrt(v.sumByDouble { it -> sqr(it) })
+fun abs(v: List<Double>) = sqrt(v.sumByDouble(::sqr))
 
 /**
  * Простая
@@ -148,12 +148,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    var answer = 0.0
-    for (i in 0 until a.size)
-        answer += a[i] * b[i]
-    return answer
-}
+fun times(a: List<Double>, b: List<Double>) = a.zip(b) { aa, bb -> aa * bb }.fold(0.0) { times, it -> times + it}
 
 /**
  * Средняя
@@ -245,8 +240,8 @@ fun convert(n: Int, base: Int): List<Int> {
 val latinLetters = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
         "r", "s", "t", "u", "v", "w", "x", "y", "z")
 
-fun convertToString(n: Int, base: Int) = convert(n, base).joinToString( separator = "",
-        transform = { if (it < 10) it.toString() else latinLetters[it - 10] })
+fun convertToString(n: Int, base: Int) = convert(n, base).joinToString(separator = "",
+        transform = { if (it < 10) "$it" else latinLetters[it - 10] })
 
 /**
  * Средняя
@@ -285,29 +280,39 @@ fun decimalFromString(str: String, base: Int) =
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun generate(convertedNumber: Int, divider: Int, previousDivider: Int,
-             previousLetter: String, currentLetter: String): String {
-    val times = convertedNumber / divider
-    return if (times * divider == previousDivider - divider)
-        currentLetter + previousLetter
-    else {
-        var answer = ""
-        for (i in 0 until times)
-            answer += currentLetter
-        answer
+fun generate(convertedNumber: Int, currentDivider: Int, previousDivider: Int,
+             currentLetter: String, previousLetter: String, prePreviousLetter: String): String {
+    val times = convertedNumber / currentDivider
+    return when {
+        times * currentDivider % 9 == 0 && times != 0 -> currentLetter + prePreviousLetter
+        (currentDivider == 500 && convertedNumber / 100 == 9) || (currentDivider == 50 && convertedNumber / 10 == 9) ||
+                (currentDivider == 5 && convertedNumber == 9) -> "NO"
+        times * currentDivider == previousDivider - currentDivider &&
+                currentDivider != 50 && currentDivider != 500 && currentDivider != 5 ->
+            currentLetter + previousLetter
+        else -> {
+            var answer = ""
+            for (i in 0 until times)
+                answer += currentLetter
+            answer
+        }
     }
 }
 
-val romanLetters = listOf("", "M", "D", "C", "L", "X", "V", "I")
+val romanLetters = listOf("", "", "M", "D", "C", "L", "X", "V", "I")
 
-val romanDividers = listOf(0, 1000, 500, 100, 50, 10, 5, 1)
+val romanDividers = listOf(0, 0, 1000, 500, 100, 50, 10, 5, 1)
 
 fun roman(n: Int): String {
     var temp = n
     val answer = mutableListOf<String>()
-    for (i in 1..6) {
-        answer.add(generate(temp, romanDividers[i], romanDividers[i - 1], romanLetters[i - 1], romanLetters[i]))
-        temp %= romanDividers[i]
+    for (i in 2..8) {
+        val generated = generate(temp, romanDividers[i], romanDividers[i - 1],
+                romanLetters[i], romanLetters[i - 1], romanLetters[i - 2])
+        if (!generated.equals("NO")) {
+            answer.add(generated)
+            temp %= romanDividers[i]
+        }
     }
     return answer.joinToString(separator = "")
 }
@@ -319,7 +324,7 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun tripletName (tripletNumber: Int, currentTriplet: Int) = when (tripletNumber) {
+fun tripletName(tripletNumber: Int, currentTriplet: Int) = when (tripletNumber) {
     2 -> when {
         currentTriplet % 10 in 5..9 || currentTriplet % 10 == 0 && currentTriplet != 0 ||
                 currentTriplet % 100 in 11..19 -> "тысяч"
@@ -344,9 +349,9 @@ fun tripletName (tripletNumber: Int, currentTriplet: Int) = when (tripletNumber)
     else -> ""
 }
 
-fun tripletBody (tripletNumber: Int, currentTriplet: Int): String {
-    var answer = ""
-    answer += when (currentTriplet / 100) {
+fun tripletBody(tripletNumber: Int, currentTriplet: Int): String {
+    val answer = StringBuilder()
+    answer.append(when (currentTriplet / 100) {
         9 -> "девятьсот "
         8 -> "восемьсот "
         7 -> "семьсот "
@@ -357,8 +362,8 @@ fun tripletBody (tripletNumber: Int, currentTriplet: Int): String {
         2 -> "двести "
         1 -> "сто "
         else -> ""
-    }
-    answer += when (currentTriplet % 100 / 10) {
+    })
+    answer.append(when (currentTriplet % 100 / 10) {
         9 -> "девяносто "
         8 -> "восемьдесят "
         7 -> "семьдесят "
@@ -368,8 +373,8 @@ fun tripletBody (tripletNumber: Int, currentTriplet: Int): String {
         3 -> "тридцать "
         2 -> "двадцать "
         else -> ""
-    }
-    answer += when (currentTriplet % 100) {
+    })
+    answer.append(when (currentTriplet % 100) {
         19 -> "девятнадцать "
         18 -> "восемнадцать "
         17 -> "семнадцать "
@@ -392,8 +397,8 @@ fun tripletBody (tripletNumber: Int, currentTriplet: Int): String {
             1 -> if (tripletNumber != 2) "один " else "одна "
             else -> ""
         }
-    }
-    return answer
+    })
+    return answer.toString()
 }
 
 fun russian(n: Int): String {
@@ -402,10 +407,10 @@ fun russian(n: Int): String {
     var temp = n
     while (temp > 0) {
         val currentTriplet = temp % 1000
-        var currentTripletInRussian = ""
-        currentTripletInRussian += tripletBody(tripletNumber, currentTriplet)
-        currentTripletInRussian += tripletName(tripletNumber, currentTriplet)
-        answer.add(currentTripletInRussian)
+        val currentTripletInRussian = StringBuilder()
+        currentTripletInRussian.append(tripletBody(tripletNumber, currentTriplet))
+        currentTripletInRussian.append(tripletName(tripletNumber, currentTriplet))
+        answer.add(currentTripletInRussian.toString())
         temp /= 1000
         tripletNumber++
     }

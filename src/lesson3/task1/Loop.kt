@@ -105,7 +105,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun gcd(m: Int, n: Int): Int {
-    return if (n == 0) m else gcd (n, m % n)
+    return if (n == 0) m else gcd(n, m % n)
 }
 
 fun lcm(m: Int, n: Int) = m / gcd(m, n) * n
@@ -167,13 +167,13 @@ fun collatzSteps(x: Int): Int {
     var temp = x
     var answer = 0
     while (temp != 1) {
-        if (temp % 2 ==0) temp /= 2 else temp = temp * 3 + 1
+        if (temp % 2 == 0) temp /= 2 else temp = temp * 3 + 1
         answer++
     }
     return answer
 }
 
-fun lesserAngle (angle: Double) = angle % (2 * PI)
+fun lesserAngle(angle: Double) = angle % (2 * PI)
 /**
  * Средняя
  *
@@ -266,8 +266,7 @@ fun hasDifferentDigits(n: Int): Boolean {
         if (previous == temp % 10) {
             previous = temp % 10
             temp /= 10
-        }
-        else {
+        } else {
             answer = true
             break
         }
