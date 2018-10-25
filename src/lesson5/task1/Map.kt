@@ -213,7 +213,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>) = (a - (a - b)).distinctBy { 
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String) = (word.map { "$it" } - chars.map { it.toString() }).isEmpty()
+fun canBuildFrom(chars: List<Char>, word: String) =
+        (word.map { "$it".toLowerCase() } - chars.map { it.toString().toLowerCase() }).isEmpty()
 
 /**
  * Средняя
@@ -227,7 +228,8 @@ fun canBuildFrom(chars: List<Char>, word: String) = (word.map { "$it" } - chars.
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>) =
+        list.groupBy { it }.mapValues { if (it.value.size > 1) it.value.size else null}.filterValues { it != null }
 
 /**
  * Средняя
