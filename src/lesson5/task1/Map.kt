@@ -94,12 +94,9 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val answer = mapA.toMutableMap()
-    for ((name, phone) in mapB)
-        answer[name] = if (answer[name] == null || answer[name] == mapB[name]) phone else answer[name] + ", " + phone
-    return answer
-}
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>) =
+        mapA.toList().plus(mapB.toList()).groupBy({ it.first }, { it.second }).mapValues {
+            theIt -> theIt.value.distinctBy { it }.joinToString() }
 
 /**
  * Простая
@@ -111,17 +108,9 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val answer = mutableMapOf<Int, List<String>>()
-    for (grade in 1..5)
-    {
-        val studentsWithThisGrade = mutableListOf<String>()
-        for ((student, theGrade) in grades)
-            if (theGrade == grade) studentsWithThisGrade.add(student)
-        if (!studentsWithThisGrade.isEmpty()) answer[grade] = studentsWithThisGrade.sortedDescending()
-    }
-    return answer
-}
+fun buildGrades(grades: Map<String, Int>) =
+        grades.toList().groupBy({ it.second }, { it.first }).toSortedMap(compareBy { it }).mapValues {
+            it.value.sortedDescending() }
 
 /**
  * Простая
@@ -218,7 +207,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TO
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>) = a - (a - b)
+fun whoAreInBoth(a: List<String>, b: List<String>) = (a - (a - b)).distinctBy { it }
 
 /**
  * Средняя
