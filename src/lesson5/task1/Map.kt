@@ -154,7 +154,9 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>) =
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
+        stuff.toList().groupBy({ it.second.first }, { it.first to it.second.second }).mapValues {
+            theIt -> theIt.value.sortedBy { it.second } }[kind]?.get(0)?.first
 
 /**
  * Сложная
