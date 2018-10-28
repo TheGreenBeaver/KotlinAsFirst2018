@@ -137,7 +137,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>) = b.plus(a) == b
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>) =
-        stockPrices.groupBy ({ it.first }, { it.second }).mapValues { mean(it.value) }
+        stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
 
 /**
  * Средняя
@@ -233,7 +233,7 @@ fun canBuildFrom(chars: List<Char>, word: String) =
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>) =
-        list.groupBy { it }.mapValues { if (it.value.size > 1) it.value.size else null}.filterValues { it != null }
+        list.groupBy { it }.mapValues { if (it.value.size > 1) it.value.size else null }.filterValues { it != null }
 
 /**
  * Средняя
