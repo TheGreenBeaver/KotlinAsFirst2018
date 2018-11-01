@@ -154,9 +154,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>) =
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
-        stuff.toList().groupBy({ it.second.first }, { it.first to it.second.second }).mapValues {
-            theIt -> theIt.value.sortedBy { it.second } }[kind]?.get(0)?.first
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) = stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
+
 
 /**
  * Сложная
@@ -182,6 +181,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
+fun addFriends(allPeople: Map<String, MutableSet<String>>, addTo: String, addWho: String): Set<String> {
+    allPeople[addTo]?.add(addFriends(allPeople, addWho))
+}
+
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 /**
@@ -206,7 +209,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>) = (a - (a - b)).distinctBy { it }
+fun whoAreInBoth(a: List<String>, b: List<String>) = a.intersect(b).map { it }
 
 /**
  * Средняя
@@ -244,7 +247,7 @@ fun extractRepeats(list: List<String>) =
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>):Boolean = TODO()
 
 /**
  * Сложная
