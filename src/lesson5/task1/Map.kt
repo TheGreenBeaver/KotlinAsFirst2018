@@ -154,7 +154,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>) =
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) = stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
+        stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
 
 
 /**
@@ -181,9 +182,6 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) = 
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun addFriends(allPeople: Map<String, MutableSet<String>>, addTo: String, addWho: String): Set<String> {
-    allPeople[addTo]?.add(addFriends(allPeople, addWho))
-}
 
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
@@ -247,7 +245,7 @@ fun extractRepeats(list: List<String>) =
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>):Boolean = TODO()
+fun hasAnagrams(words: List<String>) = words.map { theIt -> theIt.map { "$it" }.sorted() }.distinct().size != words.size
 
 /**
  * Сложная
