@@ -307,6 +307,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                                         + treasuresWithoutTooBig[amountIndex - 1].second.second)
                     else
                         dynamic[amountIndex - 1][sizeIndex]
+    answer.clear()
     findAnswer(dynamic, treasuresWithoutTooBig.size, capacity, treasuresWithoutTooBig)
     return answer
 }
