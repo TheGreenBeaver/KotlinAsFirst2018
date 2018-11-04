@@ -183,8 +183,21 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
+fun haveCommonFriends(name1: String, name2: String, list: Map<String, Set<String>>) = list[name1]!!.any { list[it]!!.contains(name2) }
 
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val listOfAllPeople = friends.flatMap { it.value + it.key }.distinct()
+    val peopleAndFriends = listOfAllPeople.associate { it -> it to if (friends.contains(it)) friends[it] else emptySet() }.toMutableMap()
+    do {
+        val peopleAndFriendsBefore = peopleAndFriends
+        for ((person, _) in peopleAndFriendsBefore)
+            for (probableFriend in listOfAllPeople)
+                if (haveCommonFriends(person, probableFriend, peopleAndFriendsBefore as Map<String, Set<String>>)
+                        && probableFriend != person)
+                    peopleAndFriends[person] = peopleAndFriends[person].orEmpty().plus(probableFriend)
+    } while (peopleAndFriendsBefore != peopleAndFriends)
+    return peopleAndFriends as Map<String, Set<String>>
+}
 
 /**
  * Простая
