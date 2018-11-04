@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import lesson4.task1.mean
+import kotlin.math.max
 
 /**
  * Пример
@@ -291,31 +292,32 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
+val answer = mutableSetOf<String>()
+
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val treasuresWithoutTooBig =
-            treasures.filter { it.value.first <= capacity }.toList().sortedBy { it.second.first / it.second.second }
-    val answer = mutableSetOf<String>()
-    val dynamic = mutableMapOf<Pair<Int, Int>, Int>()
-    dynamic[0 to capacity] = 0
-    var index = 1
-    for ((name, sizeAndCost) in treasuresWithoutTooBig) {
-        val unchanged =
-                if (dynamic.containsKey(index - 1 to capacity))
-                    dynamic[index - 1 to capacity]
-                else
-                    0
-        val changed = sizeAndCost.second +
-                if (dynamic.containsKey(index - 1 to capacity - sizeAndCost.first))
-                    dynamic[index - 1 to capacity - sizeAndCost.first]!!
-                else
-                    0
-        if (unchanged!! > changed)
-            dynamic[index to capacity] = unchanged
-        else {
-            dynamic[index to capacity - sizeAndCost.first] = changed
-            answer.add(name)
-        }
-        index++
-    }
+            treasures.filter { it.value.first <= capacity }.toList().sortedBy { it.second.first.toDouble() / it.second.second.toDouble() }
+    val dynamic = Array(treasuresWithoutTooBig.size + 1) { _ -> Array(capacity + 1) {0} }
+    for (amountIndex in 1..treasuresWithoutTooBig.size)
+        for (sizeIndex in 1..capacity)
+            dynamic[amountIndex][sizeIndex] =
+                    if (sizeIndex >= treasuresWithoutTooBig[amountIndex - 1].second.first)
+                        max(dynamic[amountIndex - 1][sizeIndex],
+                                dynamic[amountIndex - 1][sizeIndex - treasuresWithoutTooBig[amountIndex - 1].second.first]
+                                        + treasuresWithoutTooBig[amountIndex - 1].second.second)
+                    else
+                        dynamic[amountIndex - 1][sizeIndex]
+    findAnswer(dynamic, treasuresWithoutTooBig.size, capacity, treasuresWithoutTooBig)
     return answer
+}
+
+fun findAnswer(dynamic: Array<Array<Int>>, amountIndex: Int, sizeIndex: Int, treasures: List<Pair<String, Pair<Int, Int>>>) {
+    if (dynamic[amountIndex][sizeIndex] == 0)
+        return
+    if (dynamic[amountIndex - 1][sizeIndex] == dynamic[amountIndex][sizeIndex])
+        findAnswer(dynamic, amountIndex - 1, sizeIndex, treasures)
+    else {
+        findAnswer(dynamic, amountIndex - 1, sizeIndex - treasures[amountIndex - 1].second.first, treasures)
+        answer.add(treasures[amountIndex - 1].first)
+    }
 }
