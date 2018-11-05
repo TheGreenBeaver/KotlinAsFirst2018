@@ -190,12 +190,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val peopleAndFriends = listOfAllPeople.associate { it -> it to if (friends.contains(it)) friends[it] else emptySet() }.toMutableMap()
     do {
         val peopleAndFriendsBefore = peopleAndFriends
+        var changed = false
         for ((person, _) in peopleAndFriendsBefore)
             for (probableFriend in listOfAllPeople)
                 if (haveCommonFriends(person, probableFriend, peopleAndFriendsBefore as Map<String, Set<String>>)
                         && probableFriend != person)
-                    peopleAndFriends[person] = peopleAndFriends[person].orEmpty().plus(probableFriend)
-    } while (peopleAndFriendsBefore != peopleAndFriends)
+                    if (peopleAndFriends[person] != peopleAndFriends[person].orEmpty().plus(probableFriend)) {
+                        peopleAndFriends[person] = peopleAndFriends[person].orEmpty().plus(probableFriend)
+                        changed = true
+                    }
+    } while (changed)
     return peopleAndFriends as Map<String, Set<String>>
 }
 
