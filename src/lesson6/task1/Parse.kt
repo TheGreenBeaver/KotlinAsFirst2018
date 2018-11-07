@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import lesson5.task1.canBuildFrom
+
 /**
  * Пример
  *
@@ -71,8 +74,26 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
+fun dateStrToDigit(str: String): String {
+    val strParsed = str.split(delimiters = " ").toMutableList()
+    return if (strParsed.size != 3 ||
+            strParsed[1] !in months ||
+            strParsed[0].toIntOrNull() == null ||
+            strParsed[2].toIntOrNull() == null ||
+            strParsed[2].toInt() < 1 ||
+            strParsed[0].toInt() !in 1..daysInMonth(months.indexOf(strParsed[1]) + 1, strParsed[2].toInt())) ""
+    else {
+        if (strParsed[0].length < 2)
+            strParsed[0] = "0" + strParsed[0]
+        strParsed[1] = (months.indexOf(strParsed[1]) + 1).toString()
+        if (strParsed[1].length < 2)
+            strParsed[1] = "0" + strParsed[1]
+        strParsed.joinToString(separator = ".")
+    }
+}
 /**
  * Средняя
  *
@@ -83,7 +104,22 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val digitalParsed = digital.split(delimiters = ".").toMutableList()
+    return if (digitalParsed.size != 3 ||
+            digitalParsed[0].toIntOrNull() == null ||
+            digitalParsed[1].toIntOrNull() == null ||
+            digitalParsed[2].toIntOrNull() == null ||
+            digitalParsed[2].toInt() < 1 ||
+            digitalParsed[1].toInt() !in 1..12 ||
+            digitalParsed[0].toInt() !in 1..daysInMonth(digitalParsed[1].toInt(), digitalParsed[2].toInt())) ""
+    else {
+        if (digitalParsed[0].startsWith("0"))
+            digitalParsed[0] = digitalParsed[0].substring(1)
+        digitalParsed[1] = months[digitalParsed[1].toInt() - 1]
+        digitalParsed.joinToString(separator = " ")
+    }
+}
 
 /**
  * Средняя
@@ -97,7 +133,16 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String) =
+        if (!canBuildFrom(listOf(' ', '+', '-', '(', ')', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), phone) ||
+                phone.filter { it == '+' }.length > 1 ||
+                phone.indexOf('+') > 0 ||
+                phone.filter { it == '(' }.length > 1 ||
+                phone.filter { it == ')' }.length > 1 ||
+                phone.indexOf(')') < phone.indexOf('('))
+            ""
+        else
+            phone.filterNot { it in listOf(' ', '-', '(', ')') }
 
 /**
  * Средняя
@@ -109,7 +154,12 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String) =
+        if (!canBuildFrom(listOf(' ', '-', '%', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), jumps) ||
+                jumps.split(delimiters = " ").none { it.toIntOrNull() != null })
+            -1
+        else
+            jumps.split(delimiters = " ").filter { it.toIntOrNull() != null }.maxBy { it.toInt() }!!.toInt()
 
 /**
  * Сложная
@@ -143,7 +193,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val strSplit = str.toLowerCase().split(delimiters = " ")
+    for (i in 0 until strSplit.size - 1)
+        if (strSplit.size != 1 && strSplit[i + 1] == strSplit[i]) {
+            val find = strSplit[i]
+            return str.substringBefore(" $find ").length + 1
+        }
+    return -1
+}
 
 /**
  * Сложная
