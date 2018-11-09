@@ -3,7 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import lesson5.task1.canBuildFrom
 
 /**
  * Пример
@@ -78,7 +77,7 @@ val months = listOf("января", "февраля", "марта", "апрел�
         "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
 fun dateStrToDigit(str: String): String {
-    val strParsed = str.split(delimiters = " ").toMutableList()
+    val strParsed = str.split(delimiters = *arrayOf(" ")).toMutableList()
     return if (strParsed.size != 3 ||
             strParsed[1] !in months ||
             strParsed[0].toIntOrNull() == null ||
@@ -105,7 +104,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val digitalParsed = digital.split(delimiters = ".").toMutableList()
+    val digitalParsed = digital.split(delimiters = *arrayOf(".")).toMutableList()
     return if (digitalParsed.size != 3 ||
             digitalParsed[0].toIntOrNull() == null ||
             digitalParsed[1].toIntOrNull() == null ||
@@ -134,15 +133,19 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String) =
-        if (!canBuildFrom(listOf(' ', '+', '-', '(', ')', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), phone) ||
+        if (phone.contains(Regex("""[^\d\s-+)(]""")) ||
                 phone.filter { it == '+' }.length > 1 ||
-                phone.indexOf('+') > 0 ||
+                phone.replace(Regex("""[^\d+)(]"""), "").indexOf('+') > 0 ||
                 phone.filter { it == '(' }.length > 1 ||
                 phone.filter { it == ')' }.length > 1 ||
-                phone.indexOf(')') < phone.indexOf('('))
+                phone.indexOf(')') < phone.indexOf('(') ||
+                phone.replace(Regex("""[^\d+)(]"""), "").indexOf('(')
+                    - phone.replace(Regex("""[^\d+)(]"""), "").indexOf('+') == 1 ||
+                phone.replace(Regex("""[^\d+)(]"""), "").indexOf(')')
+                    - phone.replace(Regex("""[^\d+)(]"""), "").indexOf('(') == 1)
             ""
         else
-            phone.filterNot { it in listOf(' ', '-', '(', ')') }
+            phone.replace(Regex("""[^+\d]"""), "")
 
 /**
  * Средняя
@@ -155,11 +158,11 @@ fun flattenPhoneNumber(phone: String) =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String) =
-        if (!canBuildFrom(listOf(' ', '-', '%', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), jumps) ||
-                jumps.split(delimiters = " ").none { it.toIntOrNull() != null })
+        if (jumps.contains(Regex("""[^\s\d%-]""")) ||
+                jumps.split(delimiters = *arrayOf(" ")).none { it.toIntOrNull() != null })
             -1
         else
-            jumps.split(delimiters = " ").filter { it.toIntOrNull() != null }.maxBy { it.toInt() }!!.toInt()
+            jumps.split(delimiters = *arrayOf(" ")).filter { it.toIntOrNull() != null }.maxBy { it.toInt() }!!.toInt()
 
 /**
  * Сложная
@@ -171,7 +174,18 @@ fun bestLongJump(jumps: String) =
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (jumps.startsWith(' ') || jumps.endsWith(' ')) return -1
+    val splitJumps = jumps.split(delimiters = *arrayOf(" "))
+    if (splitJumps.size % 2 != 0 || splitJumps.isEmpty()) return -1
+    val appropriateJumps = mutableListOf<Int>()
+    for (i in 0..splitJumps.size - 2 step 2) {
+        if (splitJumps[i].contains(Regex("""[^\d]""")) ||
+                splitJumps[i + 1].contains(Regex("""[^-%+]"""))) return -1
+        if (splitJumps[i + 1].contains('+')) appropriateJumps.add(splitJumps[i].toInt())
+    }
+    return if (appropriateJumps.isNotEmpty()) appropriateJumps.max()!! else 0
+}
 
 /**
  * Сложная
@@ -194,11 +208,13 @@ fun plusMinus(expression: String): Int = TODO()
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val strSplit = str.toLowerCase().split(delimiters = " ")
+    val strSplit = str.toLowerCase().split(delimiters = *arrayOf(" "))
     for (i in 0 until strSplit.size - 1)
         if (strSplit.size != 1 && strSplit[i + 1] == strSplit[i]) {
-            val find = strSplit[i]
-            return str.substringBefore(" $find ").length + 1
+            var answer = 0
+            for (index in 0 until i)
+                answer += 1 + strSplit[index].length
+            return answer
         }
     return -1
 }
