@@ -82,7 +82,7 @@ fun dateStrToDigit(str: String): String {
             strParsed[1] !in months ||
             strParsed[0].toIntOrNull() == null ||
             strParsed[2].toIntOrNull() == null ||
-            strParsed[2].toInt() < 1 ||
+            strParsed[2].toInt() < 0 ||
             strParsed[0].toInt() !in 1..daysInMonth(months.indexOf(strParsed[1]) + 1, strParsed[2].toInt())) ""
     else {
         if (strParsed[0].length < 2)
@@ -109,7 +109,7 @@ fun dateDigitToStr(digital: String): String {
             digitalParsed[0].toIntOrNull() == null ||
             digitalParsed[1].toIntOrNull() == null ||
             digitalParsed[2].toIntOrNull() == null ||
-            digitalParsed[2].toInt() < 1 ||
+            digitalParsed[2].toInt() < 0 ||
             digitalParsed[1].toInt() !in 1..12 ||
             digitalParsed[0].toInt() !in 1..daysInMonth(digitalParsed[1].toInt(), digitalParsed[2].toInt())) ""
     else {
@@ -132,17 +132,19 @@ fun dateDigitToStr(digital: String): String {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
+val good = Regex("""[^\d+)(]""")
+
 fun flattenPhoneNumber(phone: String) =
         if (phone.contains(Regex("""[^\d\s-+)(]""")) ||
                 phone.filter { it == '+' }.length > 1 ||
-                phone.replace(Regex("""[^\d+)(]"""), "").indexOf('+') > 0 ||
+                phone.replace(good, "").indexOf('+') > 0 ||
                 phone.filter { it == '(' }.length > 1 ||
                 phone.filter { it == ')' }.length > 1 ||
                 phone.indexOf(')') < phone.indexOf('(') ||
-                phone.replace(Regex("""[^\d+)(]"""), "").indexOf('(')
-                    - phone.replace(Regex("""[^\d+)(]"""), "").indexOf('+') == 1 ||
-                phone.replace(Regex("""[^\d+)(]"""), "").indexOf(')')
-                    - phone.replace(Regex("""[^\d+)(]"""), "").indexOf('(') == 1)
+                phone.replace(good, "").indexOf('(')
+                    - phone.replace(good, "").indexOf('+') == 1 ||
+                phone.replace(good, "").indexOf(')')
+                    - phone.replace(good, "").indexOf('(') == 1)
             ""
         else
             phone.replace(Regex("""[^+\d]"""), "")
@@ -175,7 +177,7 @@ fun bestLongJump(jumps: String) =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (jumps.startsWith(' ') || jumps.endsWith(' ')) return -1
+    if (jumps.matches(Regex("""^\s|\s$"""))) return -1
     val splitJumps = jumps.split(delimiters = *arrayOf(" "))
     if (splitJumps.size % 2 != 0 || splitJumps.isEmpty()) return -1
     val appropriateJumps = mutableListOf<Int>()
@@ -184,7 +186,7 @@ fun bestHighJump(jumps: String): Int {
                 splitJumps[i + 1].contains(Regex("""[^-%+]"""))) return -1
         if (splitJumps[i + 1].contains('+')) appropriateJumps.add(splitJumps[i].toInt())
     }
-    return if (appropriateJumps.isNotEmpty()) appropriateJumps.max()!! else 0
+    return if (appropriateJumps.isNotEmpty()) appropriateJumps.max()!! else -1
 }
 
 /**
@@ -196,9 +198,8 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()/*  {
-    val exp = expression.split(delimiters = " ")
-}*/
+fun plusMinus(expression: String): Int = TODO()
+
 
 /**
  * Сложная
@@ -232,7 +233,22 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun splitter(str: String) = str.split(delimiters = *arrayOf(" "))
+
+fun mostExpensive(description: String) =
+        if (!description.matches(Regex("""^\S.+[^\s;]$""")) ||
+        splitter(description).size % 2 != 0 ||
+        splitter(description).isEmpty() ||
+        splitter(description).any {
+            splitter(description).indexOf(it) % 2 !=0 &&
+                    splitter(description).indexOf(it) != splitter(description).size - 1 &&
+                    (!it.endsWith(';') ||
+                            (it.dropLast(1).toDoubleOrNull() == null && it.dropLast(1).toIntOrNull() == null)) })
+            ""
+        else description.split(delimiters = *arrayOf("; ")).map {
+            splitter(it)[0] to
+                    if (splitter(it)[1].toDoubleOrNull() != null) splitter(it)[1].toDouble()
+                    else splitter(it)[1].toInt().toDouble() }.maxBy { it.second }!!.first
 
 /**
  * Сложная
