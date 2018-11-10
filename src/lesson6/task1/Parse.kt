@@ -137,7 +137,7 @@ val good = Regex("""[^\d+)(]""")
 fun flattenPhoneNumber(phone: String) =
         if (phone.contains(Regex("""[^\d\s-+)(]""")) ||
                 phone.filter { it == '+' }.length > 1 ||
-                !phone.none { it !='+' } ||
+                phone.none { it != '+' } ||
                 phone.replace(good, "").indexOf('+') > 0 ||
                 phone.filter { it == '(' }.length > 1 ||
                 phone.filter { it == ')' }.length > 1 ||
