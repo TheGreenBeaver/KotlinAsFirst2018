@@ -263,15 +263,27 @@ fun mostExpensive(description: String): String {
             split.isEmpty())
         return ""
     val pairDescription = mutableListOf<Pair<String, Double>>()
-    for (i in 1 until split.size step 2) {
-        if (!split[i].endsWith(";") && i != split.size - 1 ||
-                split[i].dropLast(1).toDoubleOrNull() == null && split[i].dropLast(1).toIntOrNull() == null)
-            return ""
-        pairDescription.add(split[i - 1] to
-                if (split[i].dropLast(1).toDoubleOrNull() != null)
-                    split[i].dropLast(1).toDouble()
-                else split[i].dropLast(1).toInt().toDouble())
-    }
+    for (i in 1 until split.size step 2)
+        if (i == split.size - 1) {
+            if (split[i].toDoubleOrNull() == null && split[i].toIntOrNull() == null)
+                return ""
+            pairDescription.add(split[i - 1] to
+                    if (split[i].toDoubleOrNull() != null)
+                        split[i].toDouble()
+                    else
+                        split[i].toInt().toDouble())
+        }
+        else {
+            if (!split[i].endsWith(";") ||
+                    split[i].dropLast(1).toDoubleOrNull() == null &&
+                    split[i].dropLast(1).toIntOrNull() == null)
+                return ""
+            pairDescription.add(split[i - 1] to
+                    if (split[i].dropLast(1).toDoubleOrNull() != null)
+                        split[i].dropLast(1).toDouble()
+                    else
+                        split[i].dropLast(1).toInt().toDouble())
+        }
     return pairDescription.maxBy { it.second }!!.first
 }
 
