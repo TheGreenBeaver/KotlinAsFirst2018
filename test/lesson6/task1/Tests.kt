@@ -66,6 +66,7 @@ class Tests {
         assertEquals("", flattenPhoneNumber("+ 7--7(-------- -)13"))
         assertEquals("", flattenPhoneNumber("+  - (1)244555555555"))
         assertEquals("+345112341515", flattenPhoneNumber("----  +345(1     1)234-15-15"))
+        assertEquals("", flattenPhoneNumber("---- - - -- - - - - - - - - - -"))
     }
 
     @Test
@@ -100,6 +101,8 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 * 12") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("a + b") }
     }
 
     @Test
@@ -120,6 +123,7 @@ class Tests {
         assertEquals("", mostExpensive("asd 234; asde 231;"))
         assertEquals("", mostExpensive(" asd 234.0; asde 231"))
         assertEquals("", mostExpensive("asd 234;  asde 231"))
+        assertEquals("", mostExpensive("asd 234; asd fre"))
     }
 
     @Test

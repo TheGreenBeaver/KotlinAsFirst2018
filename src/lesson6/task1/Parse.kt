@@ -73,26 +73,32 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+
+val MONTHS = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
-fun dateStrToDigit(str: String): String {
-    val strParsed = str.split(delimiters = *arrayOf(" ")).toMutableList()
-    return if (strParsed.size != 3 ||
-            strParsed[1] !in months ||
-            strParsed[0].toIntOrNull() == null ||
-            strParsed[2].toIntOrNull() == null ||
-            strParsed[2].toInt() < 0 ||
-            strParsed[0].toInt() !in 1..daysInMonth(months.indexOf(strParsed[1]) + 1, strParsed[2].toInt())) ""
-    else {
-        if (strParsed[0].length < 2)
-            strParsed[0] = "0" + strParsed[0]
-        strParsed[1] = (months.indexOf(strParsed[1]) + 1).toString()
-        if (strParsed[1].length < 2)
-            strParsed[1] = "0" + strParsed[1]
-        strParsed.joinToString(separator = ".")
-    }
-}
+fun spl(str: String) = str.split(delimiters = *arrayOf(" "))
+fun splDot(str: String) = str.split(delimiters = *arrayOf("."))
+fun good(str: String) = str.replace(Regex("""[^\d+)(]"""), "")
+
+fun dateStrToDigit(str: String) =
+        if (spl(str).size != 3 ||
+                spl(str)[1] !in MONTHS ||
+                spl(str)[0].toIntOrNull() == null ||
+                spl(str)[2].toIntOrNull() == null ||
+                spl(str)[2].toInt() < 0 ||
+                spl(str)[0].toInt() !in 1..daysInMonth(MONTHS.indexOf(spl(str)[1]) + 1, spl(str)[2].toInt()))
+            ""
+        else {
+            val answer = spl(str).toMutableList()
+            if (answer[0].length < 2)
+                answer[0] = "0" + answer[0]
+            answer[1] = (MONTHS.indexOf(answer[1]) + 1).toString()
+            if (answer[1].length < 2)
+                answer[1] = "0" + answer[1]
+            answer.joinToString(separator = ".")
+        }
+
 /**
  * Средняя
  *
@@ -103,22 +109,22 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String {
-    val digitalParsed = digital.split(delimiters = *arrayOf(".")).toMutableList()
-    return if (digitalParsed.size != 3 ||
-            digitalParsed[0].toIntOrNull() == null ||
-            digitalParsed[1].toIntOrNull() == null ||
-            digitalParsed[2].toIntOrNull() == null ||
-            digitalParsed[2].toInt() < 0 ||
-            digitalParsed[1].toInt() !in 1..12 ||
-            digitalParsed[0].toInt() !in 1..daysInMonth(digitalParsed[1].toInt(), digitalParsed[2].toInt())) ""
-    else {
-        if (digitalParsed[0].startsWith("0"))
-            digitalParsed[0] = digitalParsed[0].substring(1)
-        digitalParsed[1] = months[digitalParsed[1].toInt() - 1]
-        digitalParsed.joinToString(separator = " ")
-    }
-}
+fun dateDigitToStr(digital: String) =
+        if (splDot(digital).size != 3 ||
+                splDot(digital)[0].toIntOrNull() == null ||
+                splDot(digital)[1].toIntOrNull() == null ||
+                splDot(digital)[2].toIntOrNull() == null ||
+                splDot(digital)[2].toInt() < 0 ||
+                splDot(digital)[1].toInt() !in 1..12 ||
+                splDot(digital)[0].toInt() !in 1..daysInMonth(splDot(digital)[1].toInt(), splDot(digital)[2].toInt()))
+            ""
+        else {
+            val answer = splDot(digital).toMutableList()
+            if (answer[0].startsWith("0"))
+                answer[0] = answer[0].substring(1)
+            answer[1] = MONTHS[answer[1].toInt() - 1]
+            answer.joinToString(separator = " ")
+        }
 
 /**
  * Средняя
@@ -132,20 +138,15 @@ fun dateDigitToStr(digital: String): String {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-val good = Regex("""[^\d+)(]""")
 
 fun flattenPhoneNumber(phone: String) =
-        if (phone.contains(Regex("""[^\d\s-+)(]""")) ||
-                phone.filter { it == '+' }.length > 1 ||
-                phone.none { it != '+' } ||
-                phone.replace(good, "").indexOf('+') > 0 ||
-                phone.filter { it == '(' }.length > 1 ||
-                phone.filter { it == ')' }.length > 1 ||
+        if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$""")) &&
+                !phone.matches(Regex("""\d""")) ||
                 phone.indexOf(')') < phone.indexOf('(') ||
-                phone.replace(good, "").indexOf('(')
-                    - phone.replace(good, "").indexOf('+') == 1 ||
-                phone.replace(good, "").indexOf(')')
-                    - phone.replace(good, "").indexOf('(') == 1)
+                good(phone).indexOf('(')
+                    - good(phone).indexOf('+') == 1 ||
+                good(phone).indexOf(')')
+                    - good(phone).indexOf('(') == 1)
             ""
         else
             phone.replace(Regex("""[^+\d]"""), "")
@@ -161,11 +162,12 @@ fun flattenPhoneNumber(phone: String) =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String) =
-        if (jumps.contains(Regex("""[^\s\d%-]""")) ||
-                jumps.split(delimiters = *arrayOf(" ")).none { it.toIntOrNull() != null })
+        if (!jumps.matches(Regex("""[\d-%][\d\s%-]*[\d-%]$""")) &&
+                !jumps.matches(Regex("""\d""")) ||
+                spl(jumps).none { it.toIntOrNull() != null })
             -1
         else
-            jumps.split(delimiters = *arrayOf(" ")).filter { it.toIntOrNull() != null }.maxBy { it.toInt() }!!.toInt()
+            spl(jumps).filter { it.toIntOrNull() != null }.maxBy { it.toInt() }!!.toInt()
 
 /**
  * Сложная
@@ -178,16 +180,18 @@ fun bestLongJump(jumps: String) =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (jumps.matches(Regex("""^\s|\s$"""))) return -1
-    val splitJumps = jumps.split(delimiters = *arrayOf(" "))
-    if (splitJumps.size % 2 != 0 || splitJumps.isEmpty()) return -1
-    val appropriateJumps = mutableListOf<Int>()
+    val splitJumps = spl(jumps)
+    if (!jumps.matches(Regex("""^\d[\d\s+%-]*[+%-]$""")) ||
+            splitJumps.size % 2 != 0 ||
+            splitJumps.isEmpty())
+        return -1
+    val successfulJumps = mutableListOf<Int>()
     for (i in 0..splitJumps.size - 2 step 2) {
-        if (splitJumps[i].contains(Regex("""[^\d]""")) ||
+        if (splitJumps[i].contains(Regex("""\D""")) ||
                 splitJumps[i + 1].contains(Regex("""[^-%+]"""))) return -1
-        if (splitJumps[i + 1].contains('+')) appropriateJumps.add(splitJumps[i].toInt())
+        if (splitJumps[i + 1].contains('+')) successfulJumps.add(splitJumps[i].toInt())
     }
-    return if (appropriateJumps.isNotEmpty()) appropriateJumps.max()!! else -1
+    return if (successfulJumps.isNotEmpty()) successfulJumps.max()!! else -1
 }
 
 /**
@@ -197,9 +201,27 @@ fun bestHighJump(jumps: String): Int {
  * использующее целые положительные числа, плюсы и минусы, разделённые пробелами.
  * Наличие двух знаков подряд "13 + + 10" или двух чисел подряд "1 2" не допускается.
  * Вернуть значение выражения (6 для примера).
- * Про нарушении формата входной строки бросить исключение IllegalArgumentException
+ * При нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val split = spl(expression)
+    if (!expression.matches(Regex("""^\d[\d\s+-]+\d$""")) &&
+            !expression.matches(Regex("""\d""")) ||
+            split.size % 2 == 0 ||
+            split[0].toIntOrNull() == null ||
+            split[0].toInt() < 0)
+        throw IllegalArgumentException("Incorrect input format")
+    var answer = spl(expression)[0].toInt()
+    for (i in 0 until split.size - 2 step 2) {
+        if (split[i + 2].toIntOrNull() == null || split[i + 2].toInt() < 0 || split[i + 1] !in listOf("+", "-"))
+            throw IllegalArgumentException("Incorrect input format")
+        answer += if (split[i + 1] == "+")
+            split[i + 2].toInt()
+        else
+            -split[i + 2].toInt()
+    }
+    return answer
+}
 
 
 /**
@@ -212,14 +234,13 @@ fun plusMinus(expression: String): Int = TODO()
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val strSplit = str.toLowerCase().split(delimiters = *arrayOf(" "))
-    for (i in 0 until strSplit.size - 1)
-        if (strSplit.size != 1 && strSplit[i + 1] == strSplit[i]) {
-            var answer = 0
-            for (index in 0 until i)
-                answer += 1 + strSplit[index].length
+    val strSplit = spl(str.toLowerCase())
+    var answer = 0
+    for (i in 0 until strSplit.size - 1) {
+        if (strSplit.size != 1 && strSplit[i + 1] == strSplit[i])
             return answer
-        }
+        answer += strSplit[i].length + 1
+    }
     return -1
 }
 
@@ -234,22 +255,25 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun splitter(str: String) = str.split(delimiters = *arrayOf(" "))
 
-fun mostExpensive(description: String) =
-        if (!description.matches(Regex("""^\S.+[^\s;]$""")) ||
-        splitter(description).size % 2 != 0 ||
-        splitter(description).isEmpty() ||
-        splitter(description).any {
-            splitter(description).indexOf(it) % 2 !=0 &&
-                    splitter(description).indexOf(it) != splitter(description).size - 1 &&
-                    (!it.endsWith(';') ||
-                            (it.dropLast(1).toDoubleOrNull() == null && it.dropLast(1).toIntOrNull() == null)) })
-            ""
-        else description.split(delimiters = *arrayOf("; ")).map {
-            splitter(it)[0] to
-                    if (splitter(it)[1].toDoubleOrNull() != null) splitter(it)[1].toDouble()
-                    else splitter(it)[1].toInt().toDouble() }.maxBy { it.second }!!.first
+fun mostExpensive(description: String): String {
+    val split = spl(description)
+    if (!description.matches(Regex("""^\S.*\d$""")) ||
+            split.size % 2 != 0 ||
+            split.isEmpty())
+        return ""
+    val pairDescription = mutableListOf<Pair<String, Double>>()
+    for (i in 1 until split.size step 2) {
+        if (!split[i].endsWith(";") && i != split.size - 1 ||
+                split[i].dropLast(1).toDoubleOrNull() == null && split[i].dropLast(1).toIntOrNull() == null)
+            return ""
+        pairDescription.add(split[i - 1] to
+                if (split[i].dropLast(1).toDoubleOrNull() != null)
+                    split[i].dropLast(1).toDouble()
+                else split[i].dropLast(1).toInt().toDouble())
+    }
+    return pairDescription.maxBy { it.second }!!.first
+}
 
 /**
  * Сложная
