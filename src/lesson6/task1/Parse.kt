@@ -79,25 +79,23 @@ val MONTHS = listOf("января", "февраля", "марта", "апрел�
 
 fun spl(str: String) = str.split(delimiters = *arrayOf(" "))
 fun splDot(str: String) = str.split(delimiters = *arrayOf("."))
-fun good(str: String) = str.replace(Regex("""[^\d+)(]"""), "")
 
 fun dateStrToDigit(str: String): String {
     val splStr = spl(str).toMutableList()
-    if (splStr.size != 3 ||
+    return if (splStr.size != 3 ||
             splStr[1] !in MONTHS ||
             splStr[0].toIntOrNull() == null ||
             splStr[2].toIntOrNull() == null ||
             splStr[2].toInt() < 0 ||
             splStr[0].toInt() !in 1..daysInMonth(MONTHS.indexOf(splStr[1]) + 1, splStr[2].toInt()))
-        return ""
+        ""
     else {
         if (splStr[0].length < 2)
             splStr[0] = "0" + splStr[0]
         splStr[1] = (MONTHS.indexOf(splStr[1]) + 1).toString()
         if (splStr[1].length < 2)
-            splStr[1] = "0" +
-                    splStr[1]
-        return splStr.joinToString(separator = ".")
+            splStr[1] = "0" + splStr[1]
+        splStr.joinToString(separator = ".")
     }
 }
 
@@ -113,19 +111,19 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val splDig = splDot(digital).toMutableList()
-    if (splDig.size != 3 ||
+    return if (splDig.size != 3 ||
             splDig[0].toIntOrNull() == null ||
             splDig[1].toIntOrNull() == null ||
             splDig[2].toIntOrNull() == null ||
             splDig[2].toInt() < 0 ||
             splDig[1].toInt() !in 1..12 ||
             splDig[0].toInt() !in 1..daysInMonth(splDig[1].toInt(), splDig[2].toInt()))
-        return ""
+        ""
     else {
         if (splDig[0].startsWith("0"))
             splDig[0] = splDig[0].substring(1)
         splDig[1] = MONTHS[splDig[1].toInt() - 1]
-        return splDig.joinToString(separator = " ")
+        splDig.joinToString(separator = " ")
     }
 }
 
@@ -142,16 +140,16 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 
-fun flattenPhoneNumber(phone: String) =
-        if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""(^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$)|(\d)""")) ||
-                phone.indexOf(')') < phone.indexOf('(') ||
-                good(phone).indexOf('(')
-                    - good(phone).indexOf('+') == 1 ||
-                good(phone).indexOf(')')
-                    - good(phone).indexOf('(') == 1)
-            ""
-        else
-            phone.replace(Regex("""[^+\d]"""), "")
+fun flattenPhoneNumber(phone: String): String {
+    val goodPhone = phone.replace(Regex("""[^\d+)(]"""), "")
+    return if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""(^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$)|(\d)""")) ||
+            phone.indexOf(')') < phone.indexOf('(') ||
+            goodPhone.indexOf('(') - goodPhone.indexOf('+') == 1 ||
+            goodPhone.indexOf(')') - goodPhone.indexOf('(') == 1)
+        ""
+    else
+        phone.replace(Regex("""[^+\d]"""), "")
+}
 
 /**
  * Средняя
@@ -236,12 +234,11 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val strSplit = spl(str.toLowerCase())
     var answer = 0
-    if (strSplit.size != 1)
-        for (i in 0 until strSplit.size - 1) {
-            if (strSplit[i + 1] == strSplit[i])
-                return answer
-            answer += strSplit[i].length + 1
-        }
+    for (i in 0 until strSplit.size - 1) {
+        if (strSplit[i + 1] == strSplit[i])
+            return answer
+        answer += strSplit[i].length + 1
+    }
     return -1
 }
 
@@ -268,33 +265,9 @@ fun mostExpensive(description: String): String {
         if (item.size != 2 || item[1].toDoubleOrNull() == null)
             return ""
         else
-
+            pairDescription[item[0]] = item[1].toDouble()
     }
-
-
-
-    for (i in 1 until split.size step 2)
-        if (i == split.size - 1) {
-            if (split[i].toDoubleOrNull() == null && split[i].toIntOrNull() == null)
-                return ""
-            pairDescription.add(split[i - 1] to
-                    if (split[i].toDoubleOrNull() != null)
-                        split[i].toDouble()
-                    else
-                        split[i].toInt().toDouble())
-        }
-        else {
-            if (!split[i].endsWith(";") ||
-                    split[i].dropLast(1).toDoubleOrNull() == null &&
-                    split[i].dropLast(1).toIntOrNull() == null)
-                return ""
-            pairDescription.add(split[i - 1] to
-                    if (split[i].dropLast(1).toDoubleOrNull() != null)
-                        split[i].dropLast(1).toDouble()
-                    else
-                        split[i].dropLast(1).toInt().toDouble())
-        }
-    return pairDescription.maxBy { it.second }!!.first
+    return pairDescription.maxBy { it.value }!!.key
 }
 
 /**
