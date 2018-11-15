@@ -81,23 +81,25 @@ fun spl(str: String) = str.split(delimiters = *arrayOf(" "))
 fun splDot(str: String) = str.split(delimiters = *arrayOf("."))
 fun good(str: String) = str.replace(Regex("""[^\d+)(]"""), "")
 
-fun dateStrToDigit(str: String) =
-        if (spl(str).size != 3 ||
-                spl(str)[1] !in MONTHS ||
-                spl(str)[0].toIntOrNull() == null ||
-                spl(str)[2].toIntOrNull() == null ||
-                spl(str)[2].toInt() < 0 ||
-                spl(str)[0].toInt() !in 1..daysInMonth(MONTHS.indexOf(spl(str)[1]) + 1, spl(str)[2].toInt()))
-            ""
-        else {
-            val answer = spl(str).toMutableList()
-            if (answer[0].length < 2)
-                answer[0] = "0" + answer[0]
-            answer[1] = (MONTHS.indexOf(answer[1]) + 1).toString()
-            if (answer[1].length < 2)
-                answer[1] = "0" + answer[1]
-            answer.joinToString(separator = ".")
-        }
+fun dateStrToDigit(str: String): String {
+    val splStr = spl(str).toMutableList()
+    if (splStr.size != 3 ||
+            splStr[1] !in MONTHS ||
+            splStr[0].toIntOrNull() == null ||
+            splStr[2].toIntOrNull() == null ||
+            splStr[2].toInt() < 0 ||
+            splStr[0].toInt() !in 1..daysInMonth(MONTHS.indexOf(splStr[1]) + 1, splStr[2].toInt()))
+        return ""
+    else {
+        if (splStr[0].length < 2)
+            splStr[0] = "0" + splStr[0]
+        splStr[1] = (MONTHS.indexOf(splStr[1]) + 1).toString()
+        if (splStr[1].length < 2)
+            splStr[1] = "0" +
+                    splStr[1]
+        return splStr.joinToString(separator = ".")
+    }
+}
 
 /**
  * Средняя
@@ -109,22 +111,23 @@ fun dateStrToDigit(str: String) =
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String) =
-        if (splDot(digital).size != 3 ||
-                splDot(digital)[0].toIntOrNull() == null ||
-                splDot(digital)[1].toIntOrNull() == null ||
-                splDot(digital)[2].toIntOrNull() == null ||
-                splDot(digital)[2].toInt() < 0 ||
-                splDot(digital)[1].toInt() !in 1..12 ||
-                splDot(digital)[0].toInt() !in 1..daysInMonth(splDot(digital)[1].toInt(), splDot(digital)[2].toInt()))
-            ""
-        else {
-            val answer = splDot(digital).toMutableList()
-            if (answer[0].startsWith("0"))
-                answer[0] = answer[0].substring(1)
-            answer[1] = MONTHS[answer[1].toInt() - 1]
-            answer.joinToString(separator = " ")
-        }
+fun dateDigitToStr(digital: String): String {
+    val splDig = splDot(digital).toMutableList()
+    if (splDig.size != 3 ||
+            splDig[0].toIntOrNull() == null ||
+            splDig[1].toIntOrNull() == null ||
+            splDig[2].toIntOrNull() == null ||
+            splDig[2].toInt() < 0 ||
+            splDig[1].toInt() !in 1..12 ||
+            splDig[0].toInt() !in 1..daysInMonth(splDig[1].toInt(), splDig[2].toInt()))
+        return ""
+    else {
+        if (splDig[0].startsWith("0"))
+            splDig[0] = splDig[0].substring(1)
+        splDig[1] = MONTHS[splDig[1].toInt() - 1]
+        return splDig.joinToString(separator = " ")
+    }
+}
 
 /**
  * Средняя
@@ -140,8 +143,7 @@ fun dateDigitToStr(digital: String) =
  */
 
 fun flattenPhoneNumber(phone: String) =
-        if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$""")) &&
-                !phone.matches(Regex("""\d""")) ||
+        if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""(^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$)|(\d)""")) ||
                 phone.indexOf(')') < phone.indexOf('(') ||
                 good(phone).indexOf('(')
                     - good(phone).indexOf('+') == 1 ||
@@ -162,8 +164,7 @@ fun flattenPhoneNumber(phone: String) =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String) =
-        if (!jumps.matches(Regex("""[\d-%][\d\s%-]*[\d-%]$""")) &&
-                !jumps.matches(Regex("""\d""")) ||
+        if (!jumps.matches(Regex("""([\d-%][\d\s%-]*[\d-%]$)|(\d)""")) ||
                 spl(jumps).none { it.toIntOrNull() != null })
             -1
         else
@@ -205,8 +206,7 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val split = spl(expression)
-    if (!expression.matches(Regex("""^\d[\d\s+-]+\d$""")) &&
-            !expression.matches(Regex("""\d""")) ||
+    if (!expression.matches(Regex("""(^\d[\d\s+-]+\d$)|(\d)""")) ||
             split.size % 2 == 0 ||
             split[0].toIntOrNull() == null ||
             split[0].toInt() < 0)
@@ -236,11 +236,12 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val strSplit = spl(str.toLowerCase())
     var answer = 0
-    for (i in 0 until strSplit.size - 1) {
-        if (strSplit.size != 1 && strSplit[i + 1] == strSplit[i])
-            return answer
-        answer += strSplit[i].length + 1
-    }
+    if (strSplit.size != 1)
+        for (i in 0 until strSplit.size - 1) {
+            if (strSplit[i + 1] == strSplit[i])
+                return answer
+            answer += strSplit[i].length + 1
+        }
     return -1
 }
 
@@ -257,12 +258,21 @@ fun firstDuplicateIndex(str: String): Int {
  */
 
 fun mostExpensive(description: String): String {
-    val split = spl(description)
+    val split = description.split(delimiters = *arrayOf("; "))
     if (!description.matches(Regex("""^\S.*\d$""")) ||
-            split.size % 2 != 0 ||
             split.isEmpty())
         return ""
-    val pairDescription = mutableListOf<Pair<String, Double>>()
+    val pairDescription = mutableMapOf<String, Double>()
+    for (i in 0 until split.size) {
+        val item = split[i].split(delimiters = *arrayOf(" "))
+        if (item.size != 2 || item[1].toDoubleOrNull() == null)
+            return ""
+        else
+
+    }
+
+
+
     for (i in 1 until split.size step 2)
         if (i == split.size - 1) {
             if (split[i].toDoubleOrNull() == null && split[i].toIntOrNull() == null)
