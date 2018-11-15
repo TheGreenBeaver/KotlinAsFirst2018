@@ -259,15 +259,15 @@ fun mostExpensive(description: String): String {
     if (!description.matches(Regex("""^\S.*\d$""")) ||
             split.isEmpty())
         return ""
-    val pairDescription = mutableMapOf<String, Double>()
+    val pairDescription = mutableListOf<Pair<String, Double>>()
     for (i in 0 until split.size) {
         val item = split[i].split(delimiters = *arrayOf(" "))
         if (item.size != 2 || item[1].toDoubleOrNull() == null)
             return ""
         else
-            pairDescription[item[0]] = item[1].toDouble()
+            pairDescription.add(item[0] to item[1].toDouble())
     }
-    return pairDescription.maxBy { it.value }!!.key
+    return pairDescription.maxBy { it.second }!!.first
 }
 
 /**
