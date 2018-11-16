@@ -142,10 +142,8 @@ fun dateDigitToStr(digital: String): String {
 
 fun flattenPhoneNumber(phone: String): String {
     val goodPhone = phone.replace(Regex("""[^\d+)(]"""), "")
-    return if (!phone.dropWhile { it in listOf(' ', '-') }.matches(Regex("""(^[+\d-][\d\s-]*\(?[\d\s-]*\)?[\d\s-]*[\d-]$)|(\d)""")) ||
-            phone.indexOf(')') < phone.indexOf('(') ||
-            goodPhone.indexOf('(') - goodPhone.indexOf('+') == 1 ||
-            goodPhone.indexOf(')') - goodPhone.indexOf('(') == 1)
+    return if (!phone.replace(Regex("""[-\s]"""), "").matches(Regex("""(^[+\d]\d*(\(\d+\))?\d*\d$)|(\d)""")) ||
+            goodPhone.indexOf('(') - goodPhone.indexOf('+') == 1)
         ""
     else
         phone.replace(Regex("""[^+\d]"""), "")
@@ -281,6 +279,7 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+
 fun fromRoman(roman: String): Int = TODO()
 
 /**
