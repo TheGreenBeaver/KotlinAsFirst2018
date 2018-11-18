@@ -76,6 +76,8 @@ fun main(args: Array<String>) {
 
 val MONTHS = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря")
+val ROMAN_LETTERS = listOf('M', 'D', 'C', 'L', 'X', 'V', 'I')
+val ROMAN_DIVIDERS = listOf(1000, 500, 100, 50, 10, 5, 1)
 
 fun spl(str: String) = str.split(delimiters = *arrayOf(" "))
 fun splDot(str: String) = str.split(delimiters = *arrayOf("."))
@@ -280,7 +282,17 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (!roman.matches(Regex("""M*(CM)?(CD(?!C)|D)?C{0,2}(XC(?![XL])|C)?(L|XL(?!X))?X{0,2}(X|IX(?!.))?(V|IV(?!.))?I{0,3}""")))
+        return -1
+    var answer = ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[roman.length - 1])]
+    for (i in roman.length - 2 downTo 0)
+        answer += if (ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[i])] >= ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[i + 1])])
+            ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[i])]
+        else
+            -ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[i])]
+    return answer
+}
 
 /**
  * Очень сложная
