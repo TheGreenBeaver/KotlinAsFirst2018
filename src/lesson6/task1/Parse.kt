@@ -283,7 +283,7 @@ fun mostExpensive(description: String): String {
  */
 
 fun fromRoman(roman: String): Int {
-    if (!roman.matches(Regex("""M*(CM)?(CD(?!C)|D)?C{0,3}(XC(?![XL]))?(L|XL(?!X))?X{0,3}(IX(?!.))?(V|IV(?!.))?I{0,3}""")) ||
+    if (!roman.matches(Regex("""M*(CM(?![CD]))?(CD(?!C)|D)?C{0,3}(XC(?![XL]))?(L|XL(?!X))?X{0,3}(IX(?!.))?(V|IV(?!.))?I{0,3}""")) ||
             roman == "")
         return -1
     var answer = ROMAN_DIVIDERS[ROMAN_LETTERS.indexOf(roman[roman.length - 1])]
