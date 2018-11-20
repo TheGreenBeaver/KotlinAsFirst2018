@@ -256,18 +256,12 @@ fun firstDuplicateIndex(str: String): Int {
 
 fun mostExpensive(description: String): String {
     val split = description.split(delimiters = *arrayOf("; "))
+    val itemsSplit = split.map { it.split(delimiters = *arrayOf(" ")) }
     if (!description.matches(Regex("""^\S.*\d$""")) ||
-            split.isEmpty())
+            split.isEmpty() ||
+            itemsSplit.any { it.size != 2 || it[1].toDoubleOrNull() == null || it[1].toDouble() < 0 })
         return ""
-    val pairDescription = mutableListOf<Pair<String, Double>>()
-    for (i in 0 until split.size) {
-        val item = split[i].split(delimiters = *arrayOf(" "))
-        if (item.size != 2 || item[1].toDoubleOrNull() == null)
-            return ""
-        else
-            pairDescription.add(item[0] to item[1].toDouble())
-    }
-    return pairDescription.maxBy { it.second }!!.first
+    return itemsSplit.associate { it[0] to it[1].toDouble() }.maxBy { it.value }!!.key
 }
 
 /**

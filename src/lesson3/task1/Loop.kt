@@ -2,7 +2,9 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import java.lang.Math.pow
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -173,6 +175,18 @@ fun collatzSteps(x: Int): Int {
     return answer
 }
 
+fun trigonometry(start: Double, x: Double, eps: Double, plus: Double): Double {
+    var i = 0
+    var answer = start
+    var addition: Double
+    do {
+        i++
+        addition = pow(-1.0, i.toDouble()) * pow(x, i * 2.0 + plus) / factorial(i * 2 + plus.toInt())
+        answer += addition
+    } while (abs(addition) >= eps)
+    return answer
+}
+
 fun lesserAngle(angle: Double) = angle % (2 * PI)
 /**
  * Средняя
@@ -181,20 +195,7 @@ fun lesserAngle(angle: Double) = angle % (2 * PI)
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double {
-    val angle = lesserAngle(x)
-    var answer = angle
-    var add: Double
-    var multiplier = -1
-    var powAndFactorial = 3.0
-    do {
-        add = multiplier * Math.pow(angle, powAndFactorial) / factorial(powAndFactorial.toInt())
-        multiplier *= -1
-        powAndFactorial += 2
-        answer += add
-    } while (Math.abs(add) > eps)
-    return answer
-}
+fun sin(x: Double, eps: Double) =  trigonometry(lesserAngle(x), lesserAngle(x), eps, 1.0)
 
 /**
  * Средняя
@@ -203,20 +204,7 @@ fun sin(x: Double, eps: Double): Double {
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double {
-    val angle = lesserAngle(x)
-    var add: Double
-    var answer = 1.0
-    var multiplier = -1.0
-    var powAndFactorial = 2.0
-    do {
-        add = multiplier * Math.pow(angle, powAndFactorial) / factorial(powAndFactorial.toInt())
-        multiplier *= -1.0
-        powAndFactorial += 2.0
-        answer += add
-    } while (Math.abs(add) > eps)
-    return answer
-}
+fun cos(x: Double, eps: Double) = trigonometry(1.0, lesserAngle(x), eps, 0.0)
 
 /**
  * Средняя
