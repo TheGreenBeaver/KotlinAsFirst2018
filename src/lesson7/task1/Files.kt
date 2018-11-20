@@ -220,7 +220,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val onlyDifferent = File(inputName).readLines().filter {
         it.toLowerCase().split("").distinct().joinToString("") == it.toLowerCase() }
-    outputStream.write(onlyDifferent.filter { it.length == onlyDifferent.max()!!.length }.joinToString())
+    outputStream.write(onlyDifferent.filter { theIt -> theIt.length == onlyDifferent.maxBy { it.length }!!.length }.joinToString())
     outputStream.close()
 }
 
