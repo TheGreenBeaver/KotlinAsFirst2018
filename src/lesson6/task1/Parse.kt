@@ -142,14 +142,12 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 
-fun flattenPhoneNumber(phone: String): String {
-    val goodPhone = phone.replace(Regex("""[-\s]"""), "")
-    return if (!goodPhone.matches(Regex("""(^[+\d]\d*(\(\d+\))?\d*\d$)|(\d)""")) ||
-            goodPhone.indexOf('(') - goodPhone.indexOf('+') == 1)
-        ""
-    else
-        phone.replace(Regex("""[^+\d]"""), "")
-}
+fun flattenPhoneNumber(phone: String) =
+        if (phone.replace(Regex("""[-\s]"""), "").
+                        matches(Regex("""(^(\+(?=\d+)|\d)\d*(\(\d+\))?\d*\d$)|(\d)""")))
+            phone.replace(Regex("""[^+\d]"""), "")
+        else
+            ""
 
 /**
  * Средняя

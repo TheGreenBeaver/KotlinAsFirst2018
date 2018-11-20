@@ -217,7 +217,11 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val onlyDifferent = File(inputName).readLines().filter {
+        it.toLowerCase().split("").distinct().joinToString("") == it.toLowerCase() }
+    outputStream.write(onlyDifferent.filter { it.length == onlyDifferent.max()!!.length }.joinToString())
+    outputStream.close()
 }
 
 /**
@@ -402,7 +406,40 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val process = mutableListOf<String>()
+    process.add(lhv.toString())
+    process.add(rhv.toString())
+    process.add("")
+    var spaces = ""
+    var temp = rhv
+    var multiplier = 1
+    var answer = 0
+    while (temp > 0) {
+        val localResult = lhv * (temp % 10)
+        answer += localResult * multiplier
+        process.add("$localResult" + spaces)
+        multiplier *= 10
+        spaces += " "
+        temp /= 10
+    }
+    process.add("")
+    process.add("$answer")
+    val maxLength = process.maxBy { it.length }!!.length + 1
+    for (i in 0 until process.size)
+        process[i] = Array(maxLength - process[i].length){ " " }.joinToString("") + process[i]
+    val delimiter = Array(maxLength){ "-" }.joinToString("")
+    process[1] = process[1].replaceFirst(' ', '*')
+    process[2] = delimiter
+    process[process.size - 2] = delimiter
+    if (process.size > 6)
+        for (i in 4..process.size - 3)
+            process[i] = process[i].replaceFirst(' ', '+')
+    for (str in process){
+        outputStream.write(str.trimEnd())
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 
