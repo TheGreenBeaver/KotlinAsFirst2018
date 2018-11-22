@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
+import lesson7.task1.printDivisionProcess
 import kotlin.math.*
 import java.lang.Math
 
@@ -62,6 +63,7 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
     println("Root product: $x1x2")
+    printDivisionProcess(2345, 15, "input/out.txt")
 }
 
 /**

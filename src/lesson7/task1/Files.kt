@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.Math.pow
 
 /**
  * Пример
@@ -431,10 +432,8 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     if (process.size > 6)
         for (i in 4..process.size - 3)
             process[i] = process[i].replaceFirst(' ', '+')
-    for (str in process){
-        outputStream.write(str.trimEnd())
-        outputStream.newLine()
-    }
+    for (str in process)
+        writeln(str.trimEnd(), outputStream)
     outputStream.close()
 }
 
@@ -461,12 +460,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun line(size: Int, symbol: String) = Array(size){ symbol }.joinToString("")
 
-fun step(lastSubstract: Int, localResult: Int): List<String> {
-    val answer = mutableListOf<String>()
-    answer.add(line(lastSubstract.toString().length + 1, "-"))
-    answer.add(line())
-}
-
 fun writeln(str: String, out: BufferedWriter) {
     out.write(str)
     out.newLine()
@@ -474,21 +467,27 @@ fun writeln(str: String, out: BufferedWriter) {
 
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
+    val lhvLength = "$lhv".length
     val answer = lhv / rhv
+    val answerLength = "$answer".length
     writeln(" $lhv | $rhv", outputStream)
-    var substract = rhv * answer.toString().substring(0, 1).toInt()
-    var localResult = (lhv -
-            ("$substract" + line("$lhv".length - "$substract".length, "0")).toInt()).
-            toString().trimEnd('0').toInt()
-    localResult = ("$localResult" + "$lhv".substring("$substract".length, "$substract".length + 1)).toInt()
-    writeln("-$substract" + line(" $lhv | ".length - "$substract".length, " "), outputStream)
-    var digitNumber = 1
-    while (digitNumber < "$answer".length) {
-        val oneStep = step(substract, localResult)
-        for (i in 0..3)
-            writeln(oneStep[i], outputStream)
-        substract = rhv * "$answer".substring(digitNumber, digitNumber + 1).toInt()
-        digitNumber ++
+    var substract = rhv * "$answer".substring(0, 1).toInt()
+    val firstSubstractLength = "$substract".length
+    val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
+    var localResult = (lhv - substract * zeros) / zeros * 10 +
+            "$lhv".substring(firstSubstractLength, firstSubstractLength + 1).toInt()
+    writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
+    var digitInAnswerNumber = 1
+    var spaces = ""
+    var digitInLhvNumber = "$substract".length + 1
+    while (digitInAnswerNumber < answerLength) {
+        writeln(spaces + line("$substract".length + 1, "-"), outputStream)
+        writeln(line("$substract".length - "$localResult".length + 2, " ") + "$localResult", outputStream)
+        substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
+        spaces = line(digitInLhvNumber - "$substract".length, " ")
+        writeln("$spaces-$substract", outputStream)
+        digitInAnswerNumber ++
+        digitInLhvNumber++
     }
     outputStream.close()
 }
