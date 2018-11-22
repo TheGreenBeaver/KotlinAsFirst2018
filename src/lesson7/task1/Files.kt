@@ -499,7 +499,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var previous = "$lhv".substring(0, firstSubstractLength)
     while (digitInAnswerNumber < answerLength) {
         val shift = maxOf("$substract".length + 1, previous.length)
-        writeln(line(spaces.length - "$substract".length - 1 + shift, " ") +
+        writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
                 line(shift, "-"), outputStream)
         writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
                 + localResult, outputStream)
@@ -513,7 +513,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         digitInLhvNumber++
     }
     val mod = (lhv % rhv).toString()
-    writeln(spaces + line("$substract".length + 1, "-"), outputStream)
+    val shift = maxOf("$substract".length + 1, previous.length)
+    writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
+            line(shift, "-"), outputStream)
     outputStream.write(line(spaces.length + 1 + "$substract".length - mod.length, " ") +
             mod)
     outputStream.close()
