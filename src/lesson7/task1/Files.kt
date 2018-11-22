@@ -475,7 +475,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val firstSubstractLength = "$substract".length
     val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
     var localResult = ((lhv - substract * zeros) / zeros).toString()
-    if (lhvLength > 1)
+    if (lhvLength != firstSubstractLength)
         localResult += "$lhv".substring(firstSubstractLength, firstSubstractLength + 1)
     writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
     var digitInAnswerNumber = 1
