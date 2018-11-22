@@ -58,8 +58,23 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 val REPLACEMENTS = mapOf("ы" to "и", "Ы" to "И", "я" to "а", "Я" to "А", "ю" to "у", "Ю" to "У")
 
-fun countSubstrings(inputName: String, substrings: List<String>) =
-        substrings.associate { it to File(inputName).readText().split(delimiters = *arrayOf(it), ignoreCase = true).size - 1 }
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val text = File(inputName).readText()
+    val answer = mutableMapOf<String, Int>()
+    for (str in substrings) {
+        var index = 0
+        var amount = 0
+        while (index < text.length) {
+            val found = text.indexOf(string = str, startIndex = index, ignoreCase = true)
+            if (found == -1)
+                break
+            amount++
+            index = found + 1
+        }
+        answer[str] = amount
+    }
+    return answer
+}
 
 
 /**
@@ -481,13 +496,17 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var digitInAnswerNumber = 1
     var spaces = ""
     var digitInLhvNumber = "$substract".length + 1
+    var previous = "$lhv".substring(0, firstSubstractLength)
     while (digitInAnswerNumber < answerLength) {
-        writeln(spaces + line("$substract".length + 1, "-"), outputStream)
+        val shift = maxOf("$substract".length + 1, previous.length)
+        writeln(line(spaces.length - "$substract".length - 1 + shift, " ") +
+                line(shift, "-"), outputStream)
         writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
                 + localResult, outputStream)
         substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
         spaces = line(digitInLhvNumber - "$substract".length, " ")
         writeln("$spaces-$substract", outputStream)
+        previous = localResult
         if (digitInLhvNumber < lhvLength)
             localResult = ((localResult.toInt() - substract).toString() + "$lhv".substring(digitInLhvNumber, digitInLhvNumber + 1))
         digitInAnswerNumber++
