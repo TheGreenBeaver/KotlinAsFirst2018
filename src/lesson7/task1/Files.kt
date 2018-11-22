@@ -474,21 +474,29 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var substract = rhv * "$answer".substring(0, 1).toInt()
     val firstSubstractLength = "$substract".length
     val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
-    var localResult = (lhv - substract * zeros) / zeros * 10 +
-            "$lhv".substring(firstSubstractLength, firstSubstractLength + 1).toInt()
+    var localResult = ((lhv - substract * zeros) / zeros).toString()
+    if (lhvLength > 1)
+        localResult += "$lhv".substring(firstSubstractLength, firstSubstractLength + 1)
     writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
     var digitInAnswerNumber = 1
     var spaces = ""
     var digitInLhvNumber = "$substract".length + 1
     while (digitInAnswerNumber < answerLength) {
         writeln(spaces + line("$substract".length + 1, "-"), outputStream)
-        writeln(line("$substract".length - "$localResult".length + 2, " ") + "$localResult", outputStream)
+        writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
+                + localResult, outputStream)
         substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
         spaces = line(digitInLhvNumber - "$substract".length, " ")
         writeln("$spaces-$substract", outputStream)
-        digitInAnswerNumber ++
+        if (digitInLhvNumber < lhvLength)
+            localResult = ((localResult.toInt() - substract).toString() + "$lhv".substring(digitInLhvNumber, digitInLhvNumber + 1))
+        digitInAnswerNumber++
         digitInLhvNumber++
     }
+    val mod = (lhv % rhv).toString()
+    writeln(spaces + line("$substract".length + 1, "-"), outputStream)
+    outputStream.write(line(spaces.length + 1 + "$substract".length - mod.length, " ") +
+            mod)
     outputStream.close()
 }
 
