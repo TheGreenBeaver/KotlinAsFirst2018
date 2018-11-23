@@ -4,7 +4,6 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
-import java.lang.Math.pow
 
 /**
  * Пример
@@ -510,53 +509,48 @@ fun writeln(str: String, out: BufferedWriter) {
     out.newLine()
 }
 
+fun countLocal(lhv: Int, previous: String, sub: Int, digitNum: Int) =
+        (previous.toInt() - sub).toString() + if (digitNum != "$lhv".length) "$lhv"[digitNum] else ""
+
+fun countSpaceBeforeSub(previousSpace: Int, previous: String, sub: Int) = previousSpace + previous.length - "$sub".length - 1
+
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    val lhvLength = "$lhv".length
     val answer = lhv / rhv
-    val mod = (lhv % rhv).toString()
     val answerLength = "$answer".length
-    writeln(" $lhv | $rhv", outputStream)
     var substract = rhv * "$answer".substring(0, 1).toInt()
     val firstSubstractLength = "$substract".length
-    if (answerLength == 1) {
-        writeln(line(lhvLength - firstSubstractLength, " ") +
-                "-$substract   $answer", outputStream)
-        val space = if (lhvLength > firstSubstractLength) " " else ""
-        writeln(space + line(maxOf(firstSubstractLength + 1, lhvLength), "-"), outputStream)
-        writeln(line(lhvLength + 1 - mod.length, " ") + mod, outputStream)
-    }
-    else {
-        val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
-        var localResult = ((lhv - substract * zeros) / zeros).toString()
-        if (lhvLength != firstSubstractLength)
-            localResult += "$lhv".substring(firstSubstractLength, firstSubstractLength + 1)
-        writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
-        var digitInAnswerNumber = 1
-        var spaces = ""
-        var digitInLhvNumber = "$substract".length + 1
-        var previous = "$lhv".substring(0, firstSubstractLength)
-        while (digitInAnswerNumber < answerLength) {
-            val shift = maxOf("$substract".length + 1, previous.length)
-            writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
-                    line(shift, "-"), outputStream)
-            writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
-                    + localResult, outputStream)
+    var previous = "$lhv"[0].toString()
+    var i = 1
+    while (previous.toInt() < substract)
+        previous += "$lhv"[i++]
+    var spaceBeforePrevious = if (previous.length == firstSubstractLength) 1 else 0
+    var spaceBeforeSub = countSpaceBeforeSub(spaceBeforePrevious, previous, substract)
+    val firstStr = line(spaceBeforePrevious, " ") + "$lhv | $rhv"
+    writeln(firstStr, outputStream)
+    var digitInAnswerNumber = 0
+    var digitInLhvNumber = previous.length
+    var localResult = countLocal(lhv, previous, substract, digitInLhvNumber)
+    while (digitInAnswerNumber < answerLength) {
+        val delimiterLength = maxOf(previous.length, "$substract".length + 1)
+        val str = line(spaceBeforeSub, " ") + "-$substract" +
+                if (digitInAnswerNumber == 0)
+                    line(firstStr.length - "$rhv".length - firstSubstractLength - 1, " ") + "$answer"
+                else
+                    ""
+        writeln(str, outputStream)
+        writeln(line(minOf(spaceBeforePrevious, spaceBeforeSub), " ") +
+                line(delimiterLength, "-"), outputStream)
+        digitInAnswerNumber++
+        digitInLhvNumber++
+        spaceBeforePrevious += previous.length - localResult.length + if (digitInAnswerNumber != answerLength) 1 else 0
+        writeln(line(spaceBeforePrevious, " ") + localResult, outputStream)
+        previous = localResult
+        if (digitInAnswerNumber != answerLength) {
             substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
-            spaces = line(digitInLhvNumber - "$substract".length, " ")
-            writeln("$spaces-$substract", outputStream)
-            previous = localResult
-            if (digitInLhvNumber < lhvLength)
-                localResult = ((localResult.toInt() - substract).toString() + "$lhv".substring(digitInLhvNumber, digitInLhvNumber + 1))
-            digitInAnswerNumber++
-            digitInLhvNumber++
+            spaceBeforeSub = countSpaceBeforeSub(spaceBeforePrevious, previous, substract)
+            localResult = countLocal(lhv, previous, substract, digitInLhvNumber)
         }
-        val shift = maxOf("$substract".length + 1, previous.length)
-        writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
-                line(shift, "-"), outputStream)
-        outputStream.write(line(spaces.length + 1 + "$substract".length - mod.length, " ") +
-                mod)
     }
     outputStream.close()
 }
-
