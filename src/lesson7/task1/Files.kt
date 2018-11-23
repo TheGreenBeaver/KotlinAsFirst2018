@@ -153,24 +153,28 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    val text = File(inputName).readLines().map { it.trim().replace(Regex("""\s+"""), " ") }
-    val max = text.maxBy { it.length }!!.length
-    val answer = mutableListOf<String>()
-    for (str in text) {
-        val split = str.split(" ").toMutableList()
-        var i = 0
-        while (i < split.size - 1) {
-            split[i] += " "
-            if (split.joinToString("").length == max)
-                break
-            i++
-            if (i == split.size - 1)
-                i = 0
+    if (File(inputName).readText() == "")
+        outputStream.write("")
+    else {
+        val text = File(inputName).readLines().map { it.trim().replace(Regex("""\s+"""), " ") }
+        val max = text.maxBy { it.length }!!.length
+        val answer = mutableListOf<String>()
+        for (str in text) {
+            val split = str.split(" ").toMutableList()
+            var i = 0
+            while (i < split.size - 1) {
+                split[i] += " "
+                if (split.joinToString("").length == max)
+                    break
+                i++
+                if (i == split.size - 1)
+                    i = 0
+            }
+            answer.add(split.joinToString(""))
         }
-        answer.add(split.joinToString(""))
+        for (str in answer)
+            writeln(str, outputStream)
     }
-    for (str in answer)
-        writeln(str, outputStream)
     outputStream.close()
 }
 
@@ -510,40 +514,49 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val lhvLength = "$lhv".length
     val answer = lhv / rhv
+    val mod = (lhv % rhv).toString()
     val answerLength = "$answer".length
     writeln(" $lhv | $rhv", outputStream)
     var substract = rhv * "$answer".substring(0, 1).toInt()
     val firstSubstractLength = "$substract".length
-    val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
-    var localResult = ((lhv - substract * zeros) / zeros).toString()
-    if (lhvLength != firstSubstractLength)
-        localResult += "$lhv".substring(firstSubstractLength, firstSubstractLength + 1)
-    writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
-    var digitInAnswerNumber = 1
-    var spaces = ""
-    var digitInLhvNumber = "$substract".length + 1
-    var previous = "$lhv".substring(0, firstSubstractLength)
-    while (digitInAnswerNumber < answerLength) {
+    if (answerLength == 1) {
+        writeln(line(lhvLength - firstSubstractLength, " ") +
+                "-$substract   $answer", outputStream)
+        val space = if (lhvLength > firstSubstractLength) " " else ""
+        writeln(space + line(maxOf(firstSubstractLength + 1, lhvLength), "-"), outputStream)
+        writeln(line(lhvLength + 1 - mod.length, " ") + mod, outputStream)
+    }
+    else {
+        val zeros = pow(10.0, (lhvLength - firstSubstractLength).toDouble()).toInt()
+        var localResult = ((lhv - substract * zeros) / zeros).toString()
+        if (lhvLength != firstSubstractLength)
+            localResult += "$lhv".substring(firstSubstractLength, firstSubstractLength + 1)
+        writeln("-$substract" + line("$lhv | ".length - firstSubstractLength, " ") + "$answer", outputStream)
+        var digitInAnswerNumber = 1
+        var spaces = ""
+        var digitInLhvNumber = "$substract".length + 1
+        var previous = "$lhv".substring(0, firstSubstractLength)
+        while (digitInAnswerNumber < answerLength) {
+            val shift = maxOf("$substract".length + 1, previous.length)
+            writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
+                    line(shift, "-"), outputStream)
+            writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
+                    + localResult, outputStream)
+            substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
+            spaces = line(digitInLhvNumber - "$substract".length, " ")
+            writeln("$spaces-$substract", outputStream)
+            previous = localResult
+            if (digitInLhvNumber < lhvLength)
+                localResult = ((localResult.toInt() - substract).toString() + "$lhv".substring(digitInLhvNumber, digitInLhvNumber + 1))
+            digitInAnswerNumber++
+            digitInLhvNumber++
+        }
         val shift = maxOf("$substract".length + 1, previous.length)
         writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
                 line(shift, "-"), outputStream)
-        writeln(line(spaces.length + 2 + "$substract".length - localResult.length, " ")
-                + localResult, outputStream)
-        substract = rhv * "$answer".substring(digitInAnswerNumber, digitInAnswerNumber + 1).toInt()
-        spaces = line(digitInLhvNumber - "$substract".length, " ")
-        writeln("$spaces-$substract", outputStream)
-        previous = localResult
-        if (digitInLhvNumber < lhvLength)
-            localResult = ((localResult.toInt() - substract).toString() + "$lhv".substring(digitInLhvNumber, digitInLhvNumber + 1))
-        digitInAnswerNumber++
-        digitInLhvNumber++
+        outputStream.write(line(spaces.length + 1 + "$substract".length - mod.length, " ") +
+                mod)
     }
-    val mod = (lhv % rhv).toString()
-    val shift = maxOf("$substract".length + 1, previous.length)
-    writeln(line(spaces.length + "$substract".length + 1 - shift, " ") +
-            line(shift, "-"), outputStream)
-    outputStream.write(line(spaces.length + 1 + "$substract".length - mod.length, " ") +
-            mod)
     outputStream.close()
 }
 
