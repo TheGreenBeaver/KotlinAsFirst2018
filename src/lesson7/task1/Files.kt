@@ -234,8 +234,8 @@ fun top20Words(inputName: String) =
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun capitalLetter(replaced: String, result: String) =
-        if (replaced.hashCode() in 65..90 ||
-                replaced.hashCode() in 1040..1071)
+        if (replaced.isNotEmpty() &&
+                (replaced.hashCode() in 65..90 || replaced.hashCode() in 1040..1071))
             result[0].toUpperCase() + result.drop(1)
         else
             result
@@ -532,9 +532,13 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var substract = rhv * "$answer".substring(0, 1).toInt()
     val firstSubstractLength = "$substract".length
     var previous = "$lhv"[0].toString()
-    var i = 1
-    while (previous.toInt() < substract)
-        previous += "$lhv"[i++]
+    if (substract == 0)
+        previous = "$lhv"
+    else {
+        var i = 1
+        while (previous.toInt() < substract)
+            previous += "$lhv"[i++]
+    }
     var spaceBeforePrevious = if (previous.length == firstSubstractLength) 1 else 0
     var spaceBeforeSub = countSpaceBeforeSub(spaceBeforePrevious, previous, substract)
     val firstStr = line(spaceBeforePrevious, " ") + "$lhv | $rhv"
