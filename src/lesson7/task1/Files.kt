@@ -248,7 +248,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         val normalDictionary = dictionary.map { it.key.toLowerCase().toString() to it.value.toLowerCase() }.toMap()
         outputStream.write(
                 Regex("[" + normalDictionary.map {
-                    (if (it.key in listOf("[", "]")) "\\" else "") + it.key
+                    (if (it.key in listOf("[", "]", "-", "^")) "\\" else "") + it.key
                 }.joinToString("") + "]",
                         RegexOption.IGNORE_CASE).
                         replace(File(inputName).readText()) {
