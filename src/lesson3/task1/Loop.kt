@@ -275,9 +275,8 @@ fun squareSequenceDigit(n: Int): Int {
     var lastSqr = 0
     var currentNumber = 1
     while (digitsAlreadyWritten < n) {
-        lastSqr = sqr(currentNumber)
+        lastSqr = sqr(currentNumber++)
         digitsAlreadyWritten += digitNumber(lastSqr)
-        currentNumber++
     }
     val index = digitsAlreadyWritten - n + 1
     return lastSqr % Math.pow(10.0, index.toDouble()).toInt() / Math.pow(10.0, (index - 1).toDouble()).toInt()

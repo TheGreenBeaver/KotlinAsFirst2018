@@ -162,10 +162,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             val split = str.split(" ").toMutableList()
             var i = 0
             while (i < split.size - 1) {
-                split[i] += " "
+                split[i++] += " "
                 if (split.joinToString("").length == max)
                     break
-                i++
                 if (i == split.size - 1)
                     i = 0
             }
@@ -234,8 +233,20 @@ fun top20Words(inputName: String) =
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
+fun capitalLetter(replaced: String, result: String) =
+        if (replaced.hashCode() in 65..90 ||
+                replaced.hashCode() in 1040..1071)
+            result[0].toUpperCase() + result.drop(1)
+        else
+            result
+
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val normalDictionary = dictionary.map { it.key.toLowerCase().toString() to it.value.toLowerCase() }.toMap()
+    outputStream.write(
+            Regex("[" + normalDictionary.map { it.key }.joinToString("") + "]", RegexOption.IGNORE_CASE).
+            replace(File(inputName).readText()) { capitalLetter(it.value, normalDictionary[it.value.toLowerCase()].toString()) })
+    outputStream.close()
 }
 
 /**
