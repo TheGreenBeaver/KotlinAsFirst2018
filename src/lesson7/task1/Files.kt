@@ -244,7 +244,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val outputStream = File(outputName).bufferedWriter()
     val normalDictionary = dictionary.map { it.key.toLowerCase().toString() to it.value.toLowerCase() }.toMap()
     outputStream.write(
-            Regex("[" + normalDictionary.map { it.key }.joinToString("") + "]", RegexOption.IGNORE_CASE).
+            Regex("[" + normalDictionary.map { "\\" + it.key }.joinToString("") + "]", RegexOption.IGNORE_CASE).
             replace(File(inputName).readText()) { capitalLetter(it.value, normalDictionary[it.value.toLowerCase()].toString()) })
     outputStream.close()
 }
