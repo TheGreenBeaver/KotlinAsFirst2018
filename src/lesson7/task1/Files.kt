@@ -249,7 +249,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         outputStream.write(
                 Regex("[" + normalDictionary.map {
                     (if (it.key in listOf("[", "]", "-", "^")) "\\" else "") + it.key
-                }.joinToString("") + "]",
+                }.distinct().joinToString("") + "]",
                         RegexOption.IGNORE_CASE).
                         replace(File(inputName).readText()) {
                             capitalLetter(it.value, normalDictionary[it.value.toLowerCase()].toString())
