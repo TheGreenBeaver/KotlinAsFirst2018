@@ -234,7 +234,7 @@ fun top20Words(inputName: String) =
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun capitalLetter(replaced: String, result: String) =
-        if (replaced.isNotEmpty() &&
+        if (result.isNotEmpty() &&
                 (replaced.hashCode() in 65..90 || replaced.hashCode() in 1040..1071))
             result[0].toUpperCase() + result.drop(1)
         else
