@@ -532,6 +532,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var substract = rhv * "$answer".substring(0, 1).toInt()
     val firstSubstractLength = "$substract".length
     var previous = "$lhv"[0].toString()
+    val spacesInSecondStr: Int
     if (substract == 0)
         previous = "$lhv"
     else {
@@ -542,6 +543,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var spaceBeforePrevious = if (previous.length == firstSubstractLength) 1 else 0
     var spaceBeforeSub = countSpaceBeforeSub(spaceBeforePrevious, previous, substract)
     val firstStr = line(spaceBeforePrevious, " ") + "$lhv | $rhv"
+    if (substract != 0)
+        spacesInSecondStr = firstStr.length - "$rhv".length - firstSubstractLength - 1
+    else
+        spacesInSecondStr = 3
     writeln(firstStr, outputStream)
     var digitInAnswerNumber = 0
     var digitInLhvNumber = previous.length
@@ -550,7 +555,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         val delimiterLength = maxOf(previous.length, "$substract".length + 1)
         val str = line(spaceBeforeSub, " ") + "-$substract" +
                 if (digitInAnswerNumber == 0)
-                    line(firstStr.length - "$rhv".length - firstSubstractLength - 1, " ") + "$answer"
+                    line(spacesInSecondStr, " ") + "$answer"
                 else
                     ""
         writeln(str, outputStream)
