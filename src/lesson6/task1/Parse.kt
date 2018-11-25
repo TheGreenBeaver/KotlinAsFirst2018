@@ -323,4 +323,17 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()/*{
+    if (commands.contains(Regex("""[^><+\s\]\[-]""")) ||
+            commands.count { it == '[' } != commands.count { it == ']' })
+        throw java.lang.IllegalArgumentException("Command line can't be invoked")
+    val bracesStack = mutableListOf<String>()
+    val answer = Array(cells) {0}
+    val startPos = cells / 2
+    var actions = 0
+    val splitCommands = commands.map { "$it" }
+    while (actions < limit) {
+
+    }
+    return answer.toList()
+}*/
