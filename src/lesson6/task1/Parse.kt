@@ -165,8 +165,9 @@ fun bestHighJump(jumps: String) =
         -1
     else
         ("$jumps ").
-                replace(Regex("""\d+\s[-%]+(?!\+)\s"""), "").split(Regex("""\D""")).
-                filter { it != "" }.maxBy { it.toInt() }!!.toInt()
+                replace(Regex("""\d+\s[-%]+(?!\+)\s"""), "").split(Regex("""\s\D+\s""")).
+                filter { it != "" }.
+                maxBy { it.toInt() }!!.toInt()
 /**
  * Сложная
  *
