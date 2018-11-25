@@ -115,10 +115,8 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val text = File(inputName).readLines().map { it.trim() }
-    val answer = text.map { theIt ->
-        line((text.maxBy { it.length }!!.length - theIt.length) / 2, " ") + theIt
-        }
-    for (str in answer)
+    for (str in text.map { theIt ->
+        line((text.maxBy { it.length }!!.length - theIt.length) / 2, " ") + theIt })
         writeln(str, outputStream)
     outputStream.close()
 }

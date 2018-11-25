@@ -84,21 +84,12 @@ fun splDot(str: String) = str.split(delimiters = *arrayOf("."))
 
 fun dateStrToDigit(str: String): String {
     val splStr = spl(str).toMutableList()
-    return if (splStr.size != 3 ||
+    return if (!str.matches(Regex("""\d+\s[а-я]+\s\d+""")) ||
             splStr[1] !in MONTHS ||
-            splStr[0].toIntOrNull() == null ||
-            splStr[2].toIntOrNull() == null ||
-            splStr[2].toInt() < 0 ||
             splStr[0].toInt() !in 1..daysInMonth(MONTHS.indexOf(splStr[1]) + 1, splStr[2].toInt()))
         ""
-    else {
-        if (splStr[0].length < 2)
-            splStr[0] = "0" + splStr[0]
-        splStr[1] = (MONTHS.indexOf(splStr[1]) + 1).toString()
-        if (splStr[1].length < 2)
-            splStr[1] = "0" + splStr[1]
-        splStr.joinToString(separator = ".")
-    }
+    else
+        String.format("%02d.%02d.%s", splStr[0].toInt(), MONTHS.indexOf(splStr[1]) + 1, splStr[2])
 }
 
 /**
@@ -113,20 +104,12 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val splDig = splDot(digital).toMutableList()
-    return if (splDig.size != 3 ||
-            splDig[0].toIntOrNull() == null ||
-            splDig[1].toIntOrNull() == null ||
-            splDig[2].toIntOrNull() == null ||
-            splDig[2].toInt() < 0 ||
+    return if (!digital.matches(Regex("""\d{2}\.\d{2}\.\d+""")) ||
             splDig[1].toInt() !in 1..12 ||
             splDig[0].toInt() !in 1..daysInMonth(splDig[1].toInt(), splDig[2].toInt()))
         ""
-    else {
-        if (splDig[0].startsWith("0"))
-            splDig[0] = splDig[0].substring(1)
-        splDig[1] = MONTHS[splDig[1].toInt() - 1]
-        splDig.joinToString(separator = " ")
-    }
+    else
+        String.format("${splDig[0].toInt()} ${MONTHS[splDig[1].toInt() - 1]} ${splDig[2]}")
 }
 
 /**
@@ -176,21 +159,14 @@ fun bestLongJump(jumps: String) =
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int {
-    val splitJumps = spl(jumps)
-    if (!jumps.matches(Regex("""^\d[\d\s+%-]*[+%-]$""")) ||
-            splitJumps.size % 2 != 0 ||
-            splitJumps.isEmpty())
-        return -1
-    val successfulJumps = mutableListOf<Int>()
-    for (i in 0..splitJumps.size - 2 step 2) {
-        if (splitJumps[i].contains(Regex("""\D""")) ||
-                splitJumps[i + 1].contains(Regex("""[^-%+]"""))) return -1
-        if (splitJumps[i + 1].contains('+')) successfulJumps.add(splitJumps[i].toInt())
-    }
-    return if (successfulJumps.isNotEmpty()) successfulJumps.max()!! else -1
-}
-
+fun bestHighJump(jumps: String) =
+    if (!"$jumps ".matches(Regex("""(\d+\s[-+%]+\s)+""")) ||
+            jumps.count { it == '+' } == 0)
+        -1
+    else
+        ("$jumps ").
+                replace(Regex("""\d+\s[-%]+(?!\+)\s"""), "").split(Regex("""\D""")).
+                filter { it != "" }.maxBy { it.toInt() }!!.toInt()
 /**
  * Сложная
  *
@@ -200,24 +176,13 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * При нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int {
-    val split = spl(expression)
-    if (!expression.matches(Regex("""(^\d[\d\s+-]+\d$)|(\d)""")) ||
-            split.size % 2 == 0 ||
-            split[0].toIntOrNull() == null ||
-            split[0].toInt() < 0)
-        throw IllegalArgumentException("Incorrect input format")
-    var answer = spl(expression)[0].toInt()
-    for (i in 0 until split.size - 2 step 2) {
-        if (split[i + 2].toIntOrNull() == null || split[i + 2].toInt() < 0 || split[i + 1] !in listOf("+", "-"))
+fun plusMinus(expression: String) =
+        if (!expression.matches(Regex("""((\d+\s[+-]\s)+\d+)|(\d)""")))
             throw IllegalArgumentException("Incorrect input format")
-        answer += if (split[i + 1] == "+")
-            split[i + 2].toInt()
         else
-            -split[i + 2].toInt()
-    }
-    return answer
-}
+            expression.
+                    replace(Regex("""(?<=-\s)\d+""")) { "-${it.value}" }.
+                    split(Regex("""\s[+-]\s""")).sumBy { it.toInt() }
 
 
 /**
@@ -252,15 +217,11 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 
-fun mostExpensive(description: String): String {
-    val split = description.split(delimiters = *arrayOf("; "))
-    val itemsSplit = split.map { it.split(delimiters = *arrayOf(" ")) }
-    if (!description.matches(Regex("""^\S.*\d$""")) ||
-            split.isEmpty() ||
-            itemsSplit.any { it.size != 2 || it[1].toDoubleOrNull() == null || it[1].toDouble() < 0 })
-        return ""
-    return itemsSplit.associate { it[0] to it[1].toDouble() }.maxBy { it.value }!!.key
-}
+fun mostExpensive(description: String) =
+        if (!"$description; ".matches(Regex("""(\S+\s\d+(\.\d+)?;\s)+""")))
+            ""
+        else
+            description.split("; ").map { spl(it) }.associate { it[0] to it[1].toDouble() }.maxBy { it.value }!!.key
 
 /**
  * Сложная
