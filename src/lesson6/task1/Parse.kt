@@ -284,17 +284,79 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()/*{
-    if (commands.contains(Regex("""[^><+\s\]\[-]""")) ||
-            commands.count { it == '[' } != commands.count { it == ']' })
-        throw java.lang.IllegalArgumentException("Command line can't be invoked")
-    val bracesStack = mutableListOf<String>()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    if (commands.contains(Regex("""[^-+<>\s\[\]]""")))
+        throw IllegalArgumentException("Illegal symbol in commands")
+    val bracesStack = mutableListOf<Int>()
+    val bracesPairs = mutableListOf<Pair<Int, Int>>()
+    for (i in 0 until commands.length) {
+        if (commands[i] == '[')
+            bracesStack.add(i)
+        if (commands[i] == ']') {
+            try { bracesPairs.add(bracesStack[bracesStack.size - 1] to i) }
+            catch (e: IndexOutOfBoundsException)
+            { throw IllegalArgumentException("Some braces in commands are unclosed") }
+            bracesStack.removeAt(bracesStack.size - 1)
+        }
+    }
+    if (!bracesStack.isEmpty())
+        throw IllegalArgumentException("Some braces in commands are unclosed")
     val answer = Array(cells) {0}
-    val startPos = cells / 2
-    var actions = 0
-    val splitCommands = commands.map { "$it" }
-    while (actions < limit) {
-
+    var position = cells / 2
+    var actionsDone = 0
+    var actionNumber = 0
+    while (actionsDone < limit && actionNumber < commands.length) {
+        when (commands[actionNumber]) {
+            '+' -> try {
+                answer[position]++
+            } catch (e: IndexOutOfBoundsException) {
+                throw IllegalStateException("Operation on an non-existent cell commit")
+            } finally {
+                actionNumber++
+            }
+            '-' -> try {
+                answer[position]--
+            } catch (e: IndexOutOfBoundsException) {
+                throw IllegalStateException("Operation on an non-existent cell commit")
+            } finally {
+                actionNumber++
+            }
+            '>' -> {
+                position++
+                if (position >= cells)
+                    throw IllegalStateException("Operation on an non-existent cell commit")
+                actionNumber++
+            }
+            '<' -> {
+                position--
+                if (position < 0)
+                    throw IllegalStateException("Operation on an non-existent cell commit")
+                actionNumber++
+            }
+            ' ' -> actionNumber++
+            '[' -> {
+                try {
+                    if (answer[position] == 0)
+                        actionNumber = bracesPairs.find { it.first == actionNumber }!!.second + 1
+                    else
+                        actionNumber++
+                } catch (e: IndexOutOfBoundsException) {
+                    throw IllegalStateException("Operation on an non-existent cell commit")
+                }
+            }
+            ']' -> {
+                try {
+                    if (answer[position] != 0)
+                        actionNumber = bracesPairs.find { it.second == actionNumber }!!.first + 1
+                    else
+                        actionNumber++
+                } catch (e: IndexOutOfBoundsException) {
+                    throw IllegalStateException("Operation on an non-existent cell commit")
+                }
+            }
+            else -> throw IllegalArgumentException("Illegal symbol in commands")
+        }
+        actionsDone++
     }
     return answer.toList()
-}*/
+}
