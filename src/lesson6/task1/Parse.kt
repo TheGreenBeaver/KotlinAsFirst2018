@@ -177,7 +177,7 @@ fun bestHighJump(jumps: String) =
  * При нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String) =
-        if (!expression.matches(Regex("""((\d+\s[+-]\s)+\d+)|(\d)""")))
+        if (!expression.matches(Regex("""((\d+\s[+-]\s)+\d+)|(\d+)""")))
             throw IllegalArgumentException("Incorrect input format")
         else
             expression.
