@@ -17,6 +17,14 @@ data class Point(val x: Double, val y: Double) {
      * Рассчитать (по известной формуле) расстояние между двумя точками
      */
     fun distance(other: Point): Double = sqrt(sqr(x - other.x) + sqr(y - other.y))
+
+    override fun equals(other: Any?) = other is Point && other.x == this.x && other.y == this.y
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        return result
+    }
 }
 
 /**
@@ -110,14 +118,18 @@ data class Segment(val begin: Point, val end: Point) {
 fun diameter(vararg points: Point): Segment {
     if (points.size == 1)
         throw IllegalArgumentException("Just one point is not enough")
-    val sortedX = points.sortedByDescending { it.x }
-    val maxX = sortedX.first().distance(sortedX.last())
-    val sortedY = points.sortedByDescending { it.y }
-    val maxY = sortedY.first().distance(sortedY.last())
-    return if (maxX > maxY)
-        Segment(sortedX.first(), sortedX.last())
+    val sortedX = points.sortedBy { it.x }
+    val maxX = sortedX.filter { it == sortedX.last() }.maxBy { it.y }
+    val minX = sortedX.filter { it == sortedX.first() }.minBy { it.y }
+    val maxXDistance = minX!!.distance(maxX!!)
+    val sortedY = points.sortedBy { it.y }
+    val maxY = sortedY.filter { it == sortedY.last() }.maxBy { it.x }
+    val minY = sortedY.filter { it == sortedY.first() }.minBy { it.x }
+    val maxYDistance = minY!!.distance(maxY!!)
+    return if (maxXDistance > maxYDistance)
+        Segment(maxX, minX)
     else
-        Segment(sortedY.first(), sortedY.last())
+        Segment(maxY, minY)
 }
 
 /**
