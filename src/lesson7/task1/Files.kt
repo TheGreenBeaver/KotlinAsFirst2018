@@ -76,7 +76,8 @@ val REPLACEMENTS = mapOf("ы" to "и", "Ы" to "И", "я" to "а", "Я" to "А",
 
 fun sibilants(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    outputStream.write(Regex("(?<=[жчшщ])[ыяю]", RegexOption.IGNORE_CASE).replace(File(inputName)
+    outputStream.write(Regex("(?<=[жчшщ])[ыяю]", RegexOption.IGNORE_CASE).replace(
+            File(inputName)
                     .readText()) { REPLACEMENTS[it.value].toString() })
     outputStream.close()
 }

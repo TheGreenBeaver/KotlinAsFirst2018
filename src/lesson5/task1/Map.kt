@@ -98,8 +98,10 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>) =
-        mapA.toList().plus(mapB.toList()).groupBy({ it.first }, { it.second }).mapValues {
-            theIt -> theIt.value.distinctBy { it }.joinToString() }
+        mapA.toList()
+                .plus(mapB.toList())
+                .groupBy({ it.first }, { it.second })
+                .mapValues { theIt -> theIt.value.distinctBy { it }.joinToString() }
 
 /**
  * Простая
@@ -112,8 +114,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>) =
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>) =
-        grades.toList().groupBy({ it.second }, { it.first }).toSortedMap(compareBy { it }).mapValues {
-            it.value.sortedDescending() }
+        grades.toList()
+                .groupBy({ it.second }, { it.first })
+                .toSortedMap(compareBy { it })
+                .mapValues { it.value.sortedDescending() }
 
 /**
  * Простая

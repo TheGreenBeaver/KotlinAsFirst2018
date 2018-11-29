@@ -126,8 +126,8 @@ fun dateDigitToStr(digital: String): String {
  */
 
 fun flattenPhoneNumber(phone: String) =
-        if (phone.replace(Regex("""[-\s]"""), "").
-                        matches(Regex("""(^(\+(?=\d+)|\d)\d*(\(\d+\))?\d*\d$)|(\d)""")))
+        if (phone.replace(Regex("""[-\s]"""), "")
+                        .matches(Regex("""(^(\+(?=\d+)|\d)\d*(\(\d+\))?\d*\d$)|(\d)""")))
             phone.replace(Regex("""[^+\d]"""), "")
         else
             ""
@@ -186,8 +186,8 @@ fun plusMinus(expression: String) =
         if (!expression.matches(Regex("""((\d+\s[+-]\s)+\d+)|(\d+)""")))
             throw IllegalArgumentException("Incorrect input format")
         else
-            expression.
-                    replace(Regex("""(?<=-\s)\d+""")) { "-${it.value}" }
+            expression
+                    .replace(Regex("""(?<=-\s)\d+""")) { "-${it.value}" }
                     .split(Regex("""\s[+-]\s""")).sumBy { it.toInt() }
 
 
