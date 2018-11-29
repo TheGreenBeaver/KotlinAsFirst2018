@@ -119,17 +119,35 @@ fun diameter(vararg points: Point): Segment {
     if (points.size == 1)
         throw IllegalArgumentException("Just one point is not enough")
     val sortedX = points.sortedBy { it.x }
-    val maxX = sortedX.filter { it == sortedX.last() }.maxBy { it.y }
-    val minX = sortedX.filter { it == sortedX.first() }.minBy { it.y }
-    val maxXDistance = minX!!.distance(maxX!!)
+    val maxXByY = sortedX.filter { it == sortedX.last() }.sortedBy { it.y }
+    val minXByY = sortedX.filter { it == sortedX.first() }.sortedBy { it.y }
+    val maxXDistance: Double
+    val probableAnswerX: Segment
+    if (maxXByY.first().distance(minXByY.last()) > maxXByY.last().distance(minXByY.first())) {
+        maxXDistance = maxXByY.first().distance(minXByY.last())
+        probableAnswerX = Segment(maxXByY.first(), minXByY.last())
+    }
+    else {
+        maxXDistance = maxXByY.last().distance(minXByY.first())
+        probableAnswerX = Segment(maxXByY.last(), minXByY.first())
+    }
     val sortedY = points.sortedBy { it.y }
-    val maxY = sortedY.filter { it == sortedY.last() }.maxBy { it.x }
-    val minY = sortedY.filter { it == sortedY.first() }.minBy { it.x }
-    val maxYDistance = minY!!.distance(maxY!!)
+    val maxYByX = sortedY.filter { it == sortedY.last() }.sortedBy { it.x }
+    val minYByX = sortedY.filter { it == sortedY.first() }.sortedBy { it.x }
+    val maxYDistance: Double
+    val probableAnswerY: Segment
+    if (maxYByX.first().distance(minYByX.last()) > maxYByX.last().distance(minYByX.first())) {
+        maxYDistance = maxYByX.first().distance(minYByX.last())
+        probableAnswerY = Segment(maxYByX.first(), minYByX.last())
+    }
+    else {
+        maxYDistance = maxYByX.last().distance(minYByX.first())
+        probableAnswerY = Segment(maxYByX.last(), minYByX.first())
+    }
     return if (maxXDistance > maxYDistance)
-        Segment(maxX, minX)
+        probableAnswerX
     else
-        Segment(maxY, minY)
+        probableAnswerY
 }
 
 /**
