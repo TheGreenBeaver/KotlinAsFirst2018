@@ -12,7 +12,7 @@ import kotlin.math.sqrt
  */
 data class Point(val x: Double, val y: Double) {
     /**
-     * Пример
+     * Примр
      *
      * Рассчитать (по известной формуле) расстояние между двумя точками
      */
