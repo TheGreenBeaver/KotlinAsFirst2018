@@ -18,13 +18,6 @@ data class Point(val x: Double, val y: Double) {
      */
     fun distance(other: Point): Double = sqrt(sqr(x - other.x) + sqr(y - other.y))
 
-    override fun equals(other: Any?) = other is Point && other.x == this.x && other.y == this.y
-
-    override fun hashCode(): Int {
-        var result = x.hashCode()
-        result = 31 * result + y.hashCode()
-        return result
-    }
 }
 
 /**
@@ -115,39 +108,48 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
+
 fun diameter(vararg points: Point): Segment {
     if (points.size == 1)
         throw IllegalArgumentException("Just one point is not enough")
-    val sortedX = points.sortedBy { it.x }
-    val maxXByY = sortedX.filter { it == sortedX.last() }.sortedBy { it.y }
-    val minXByY = sortedX.filter { it == sortedX.first() }.sortedBy { it.y }
-    val maxXDistance: Double
-    val probableAnswerX: Segment
-    if (maxXByY.first().distance(minXByY.last()) > maxXByY.last().distance(minXByY.first())) {
-        maxXDistance = maxXByY.first().distance(minXByY.last())
-        probableAnswerX = Segment(maxXByY.first(), minXByY.last())
+
+    val sortedByX = points.sortedBy { it.x }
+    val sortedByY = points.sortedBy { it.y }
+
+    val xIsMaximal = sortedByX.filter { it.x == sortedByX.last().x }
+    val xIsMinimal = sortedByX.filter { it.x == sortedByX.first().x }
+
+    val yIsMaximal = sortedByY.filter { it.y == sortedByY.last().y }
+    val yIsMinimal = sortedByY.filter { it.y == sortedByY.first().y }
+
+    val probableByX: Segment
+    val xDistance: Double
+    if (xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!) >
+            xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)) {
+        probableByX = Segment(xIsMaximal.maxBy { it.y }!!, xIsMinimal.minBy { it.y }!!)
+        xDistance = xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!)
     }
     else {
-        maxXDistance = maxXByY.last().distance(minXByY.first())
-        probableAnswerX = Segment(maxXByY.last(), minXByY.first())
+        probableByX = Segment(xIsMaximal.minBy { it.y }!!, xIsMinimal.maxBy { it.y }!!)
+        xDistance = xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)
     }
-    val sortedY = points.sortedBy { it.y }
-    val maxYByX = sortedY.filter { it == sortedY.last() }.sortedBy { it.x }
-    val minYByX = sortedY.filter { it == sortedY.first() }.sortedBy { it.x }
-    val maxYDistance: Double
-    val probableAnswerY: Segment
-    if (maxYByX.first().distance(minYByX.last()) > maxYByX.last().distance(minYByX.first())) {
-        maxYDistance = maxYByX.first().distance(minYByX.last())
-        probableAnswerY = Segment(maxYByX.first(), minYByX.last())
+
+    val probableByY: Segment
+    val yDistance: Double
+    if (yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!) >
+            yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)) {
+        probableByY = Segment(yIsMaximal.maxBy { it.x }!!, yIsMinimal.minBy { it.x }!!)
+        yDistance = yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!)
     }
     else {
-        maxYDistance = maxYByX.last().distance(minYByX.first())
-        probableAnswerY = Segment(maxYByX.last(), minYByX.first())
+        probableByY = Segment(yIsMaximal.minBy { it.x }!!, yIsMinimal.maxBy { it.x }!!)
+        yDistance = yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)
     }
-    return if (maxXDistance > maxYDistance)
-        probableAnswerX
+
+    return if (yDistance > xDistance)
+        probableByY
     else
-        probableAnswerY
+        probableByX
 }
 
 /**
