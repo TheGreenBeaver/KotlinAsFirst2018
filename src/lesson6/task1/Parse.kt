@@ -160,7 +160,11 @@ fun bestLongJump(jumps: String) =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String) =
-    if (!"$jumps ".matches(Regex("""(\d+\s[-+%]+\s)+""")) ||
+    if (try {
+                !"$jumps ".matches(Regex("""(\d+\s[-+%]+\s)+"""))
+            } catch (e: StackOverflowError) {
+                jumps.split(Regex("""(?<=\D)\s""")).any { !it.matches(Regex("""\d+\s[-+%]+""")) }
+            } ||
             jumps.count { it == '+' } == 0)
         -1
     else

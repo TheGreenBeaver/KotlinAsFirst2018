@@ -55,25 +55,8 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-val REPLACEMENTS = mapOf("ы" to "и", "Ы" to "И", "я" to "а", "Я" to "А", "ю" to "у", "Ю" to "У")
-
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val text = File(inputName).readText()
-    val answer = mutableMapOf<String, Int>()
-    for (str in substrings) {
-        var index = 0
-        var amount = 0
-        while (index < text.length) {
-            val found = text.indexOf(string = str, startIndex = index, ignoreCase = true)
-            if (found == -1)
-                break
-            amount++
-            index = found + 1
-        }
-        answer[str] = amount
-    }
-    return answer
-}
+fun countSubstrings(inputName: String, substrings: List<String>) =
+        substrings.associate { it to Regex(it, RegexOption.IGNORE_CASE).findAll(File(inputName).readText()).count() }
 
 
 /**
@@ -89,10 +72,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
+val REPLACEMENTS = mapOf("ы" to "и", "Ы" to "И", "я" to "а", "Я" to "А", "ю" to "у", "Ю" to "У")
+
 fun sibilants(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    outputStream.write(Regex("(?<=[жчшщ])[ыяю]", RegexOption.IGNORE_CASE).
-            replace(File(inputName).readText()) { REPLACEMENTS[it.value].toString() })
+    outputStream.write(Regex("(?<=[жчшщ])[ыяю]", RegexOption.IGNORE_CASE).replace(File(inputName)
+                    .readText()) { REPLACEMENTS[it.value].toString() })
     outputStream.close()
 }
 /**
@@ -115,8 +100,8 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val text = File(inputName).readLines().map { it.trim() }
-    for (str in text.map { theIt ->
-        line((text.maxBy { it.length }!!.length - theIt.length) / 2, " ") + theIt })
+    for (str in text.
+            map { theIt -> line((text.maxBy { it.length }!!.length - theIt.length) / 2, " ") + theIt })
         writeln(str, outputStream)
     outputStream.close()
 }
@@ -188,9 +173,17 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 fun top20Words(inputName: String) =
-        File(inputName).readText().toLowerCase().split(Regex("""[^a-zа-яё]""")).filter { it != "" }.
-                groupBy { it }.mapValues { it.value.size }.
-                toList().sortedByDescending { it.second }.take(20).associate { it.first to it.second }
+        File(inputName)
+                .readText()
+                .toLowerCase()
+                .split(Regex("""[^a-zа-яё]"""))
+                .filter { it != "" }
+                .groupBy { it }
+                .mapValues { it.value.size }
+                .toList()
+                .sortedByDescending { it.second }
+                .take(20)
+                .associate { it.first to it.second }
 /**
  * Средняя
  *
@@ -226,9 +219,9 @@ fun top20Words(inputName: String) =
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun capitalLetter(replaced: String, result: String) =
+fun capitalLetter(replaced: Char, result: String) =
         if (result.isNotEmpty() &&
-                (replaced.hashCode() in 65..90 || replaced.hashCode() in 1040..1071))
+                (replaced in 'A'..'Z' || replaced in 'А'..'Я' || replaced == 'Ё'))
             result[0].toUpperCase() + result.drop(1)
         else
             result
@@ -240,13 +233,11 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     else {
         val normalDictionary = dictionary.map { it.key.toLowerCase().toString() to it.value.toLowerCase() }.toMap()
         outputStream.write(
-                Regex("[" + normalDictionary.map {
-                    (if (it.key in listOf("[", "]", "-", "^", "(", ")", "\\")) "\\" else "") + it.key
-                }.distinct().joinToString("") + "]",
-                        RegexOption.IGNORE_CASE).
-                        replace(File(inputName).readText()) {
-                            capitalLetter(it.value, normalDictionary[it.value.toLowerCase()].toString())
-                        })
+                Regex("[" + normalDictionary
+                        .map { (if (it.key in listOf("[", "]", "-", "^", "(", ")", "\\")) "\\" else "") + it.key }
+                        .distinct()
+                        .joinToString("") + "]", RegexOption.IGNORE_CASE).replace(File(inputName)
+                        .readText()) { capitalLetter(it.value[0], normalDictionary[it.value.toLowerCase()].toString()) })
     }
     outputStream.close()
 }
@@ -545,10 +536,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var spaceBeforePrevious = if (previous.length == firstSubstractLength) 1 else 0
     var spaceBeforeSub = countSpaceBeforeSub(spaceBeforePrevious, previous, substract)
     val firstStr = line(spaceBeforePrevious, " ") + "$lhv | $rhv"
-    if (substract != 0)
-        spacesInSecondStr = firstStr.length - "$rhv".length - firstSubstractLength - 1
-    else
-        spacesInSecondStr = 3
+    spacesInSecondStr =
+            if (substract != 0)
+                firstStr.length - "$rhv".length - firstSubstractLength - 1
+            else
+                3
     writeln(firstStr, outputStream)
     var digitInAnswerNumber = 0
     var digitInLhvNumber = previous.length
