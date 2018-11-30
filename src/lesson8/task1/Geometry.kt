@@ -112,44 +112,53 @@ data class Segment(val begin: Point, val end: Point) {
 fun diameter(vararg points: Point): Segment {
     if (points.size == 1)
         throw IllegalArgumentException("Just one point is not enough")
+    var max = 0.0
+    var answer = Segment(points[0], points[1])
+    for (i in 0 until points.size - 1)
+        for (j in i + 1 until points.size)
+            if (points[i].distance(points[j]) >= max) {
+                max = points[i].distance(points[j])
+                answer = Segment(points[i], points[j])
+            }
+    return answer
 
-    val sortedByX = points.sortedBy { it.x }
-    val sortedByY = points.sortedBy { it.y }
-
-    val xIsMaximal = sortedByX.filter { it.x == sortedByX.last().x }
-    val xIsMinimal = sortedByX.filter { it.x == sortedByX.first().x }
-
-    val yIsMaximal = sortedByY.filter { it.y == sortedByY.last().y }
-    val yIsMinimal = sortedByY.filter { it.y == sortedByY.first().y }
-
-    val probableByX: Segment
-    val xDistance: Double
-    if (xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!) >
-            xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)) {
-        probableByX = Segment(xIsMaximal.maxBy { it.y }!!, xIsMinimal.minBy { it.y }!!)
-        xDistance = xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!)
-    }
-    else {
-        probableByX = Segment(xIsMaximal.minBy { it.y }!!, xIsMinimal.maxBy { it.y }!!)
-        xDistance = xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)
-    }
-
-    val probableByY: Segment
-    val yDistance: Double
-    if (yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!) >
-            yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)) {
-        probableByY = Segment(yIsMaximal.maxBy { it.x }!!, yIsMinimal.minBy { it.x }!!)
-        yDistance = yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!)
-    }
-    else {
-        probableByY = Segment(yIsMaximal.minBy { it.x }!!, yIsMinimal.maxBy { it.x }!!)
-        yDistance = yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)
-    }
-
-    return if (yDistance > xDistance)
-        probableByY
-    else
-        probableByX
+//    val sortedByX = points.sortedBy { it.x }
+//    val sortedByY = points.sortedBy { it.y }
+//
+//    val xIsMaximal = sortedByX.filter { it.x == sortedByX.last().x }
+//    val xIsMinimal = sortedByX.filter { it.x == sortedByX.first().x }
+//
+//    val yIsMaximal = sortedByY.filter { it.y == sortedByY.last().y }
+//    val yIsMinimal = sortedByY.filter { it.y == sortedByY.first().y }
+//
+//    val probableByX: Segment
+//    val xDistance: Double
+//    if (xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!) >
+//            xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)) {
+//        probableByX = Segment(xIsMaximal.maxBy { it.y }!!, xIsMinimal.minBy { it.y }!!)
+//        xDistance = xIsMaximal.maxBy { it.y }!!.distance(xIsMinimal.minBy { it.y }!!)
+//    }
+//    else {
+//        probableByX = Segment(xIsMaximal.minBy { it.y }!!, xIsMinimal.maxBy { it.y }!!)
+//        xDistance = xIsMaximal.minBy { it.y }!!.distance(xIsMinimal.maxBy { it.y }!!)
+//    }
+//
+//    val probableByY: Segment
+//    val yDistance: Double
+//    if (yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!) >
+//            yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)) {
+//        probableByY = Segment(yIsMaximal.maxBy { it.x }!!, yIsMinimal.minBy { it.x }!!)
+//        yDistance = yIsMaximal.maxBy { it.x }!!.distance(yIsMinimal.minBy { it.x }!!)
+//    }
+//    else {
+//        probableByY = Segment(yIsMaximal.minBy { it.x }!!, yIsMinimal.maxBy { it.x }!!)
+//        yDistance = yIsMaximal.minBy { it.x }!!.distance(yIsMinimal.maxBy { it.x }!!)
+//    }
+//
+//    return if (yDistance > xDistance)
+//        probableByY
+//    else
+//        probableByX
 }
 
 /**
