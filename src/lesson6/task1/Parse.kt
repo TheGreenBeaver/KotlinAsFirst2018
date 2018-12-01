@@ -51,12 +51,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -160,19 +158,19 @@ fun bestLongJump(jumps: String) =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String) =
-    if (try {
-                !"$jumps ".matches(Regex("""(\d+\s[-+%]+\s)+"""))
-            } catch (e: StackOverflowError) {
-                jumps.split(Regex("""(?<=\D)\s""")).any { !it.matches(Regex("""\d+\s[-+%]+""")) }
-            } ||
-            jumps.count { it == '+' } == 0)
-        -1
-    else
-        ("$jumps ").
-                replace(Regex("""\d+\s[-%]+(?!\+)\s"""), "").split(Regex("""\s\D+\s"""))
-                .filter { it != "" }
-                .maxBy { it.toInt() }!!
-                .toInt()
+        if (try {
+                    !"$jumps ".matches(Regex("""(\d+\s[-+%]+\s)+"""))
+                } catch (e: StackOverflowError) {
+                    jumps.split(Regex("""(?<=\D)\s""")).any { !it.matches(Regex("""\d+\s[-+%]+""")) }
+                } ||
+                jumps.count { it == '+' } == 0)
+            -1
+        else
+            ("$jumps ").replace(Regex("""\d+\s[-%]+(?!\+)\s"""), "").split(Regex("""\s\D+\s"""))
+                    .filter { it != "" }
+                    .maxBy { it.toInt() }!!
+                    .toInt()
+
 /**
  * Сложная
  *
@@ -186,9 +184,9 @@ fun plusMinus(expression: String) =
         if (!expression.matches(Regex("""((\d+\s[+-]\s)+\d+)|(\d+)""")))
             throw IllegalArgumentException("Incorrect input format")
         else
-            expression
-                    .replace(Regex("""(?<=-\s)\d+""")) { "-${it.value}" }
-                    .split(Regex("""\s[+-]\s""")).sumBy { it.toInt() }
+            expression.replace(Regex("""(?<=-\s)\d+""")) { "-${it.value}" }
+                    .split(Regex("""\s[+-]\s"""))
+                    .sumBy { it.toInt() }
 
 
 /**
@@ -299,15 +297,17 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         if (commands[i] == '[')
             bracesStack.add(i)
         if (commands[i] == ']') {
-            try { bracesPairs.add(bracesStack[bracesStack.size - 1] to i) }
-            catch (e: IndexOutOfBoundsException)
-            { throw IllegalArgumentException("Some braces in commands are unclosed") }
+            try {
+                bracesPairs.add(bracesStack[bracesStack.size - 1] to i)
+            } catch (e: IndexOutOfBoundsException) {
+                throw IllegalArgumentException("Some braces in commands are unclosed")
+            }
             bracesStack.removeAt(bracesStack.size - 1)
         }
     }
     if (!bracesStack.isEmpty())
         throw IllegalArgumentException("Some braces in commands are unclosed")
-    val answer = Array(cells) {0}
+    val answer = Array(cells) { 0 }
     var position = cells / 2
     var actionsDone = 0
     var actionNumber = 0
