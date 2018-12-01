@@ -2,10 +2,7 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Точка на плоскости
@@ -167,7 +164,15 @@ fun diameter(vararg points: Point): Segment {
  * Построить окружность по её диаметру, заданному двумя точками
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
-fun circleByDiameter(diameter: Segment): Circle = TODO()
+fun circleByDiameter(diameter: Segment): Circle {
+    val leftX = minOf(diameter.begin.x, diameter.end.x)
+    val rightX = maxOf(diameter.begin.x, diameter.end.x)
+    val centerX = leftX + (rightX - leftX) / 2
+    val lowerY = minOf(diameter.begin.y, diameter.end.y)
+    val upperY = maxOf(diameter.begin.y, diameter.end.y)
+    val centerY = lowerY + (upperY - lowerY) / 2
+    return Circle(Point(centerX, centerY), diameter.end.distance(diameter.begin) / 2)
+}
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -188,7 +193,34 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Найти точку пересечения с другой линией.
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
-    fun crossPoint(other: Line): Point = TODO()
+    fun crossPoint(other: Line): Point {
+        val x: Double
+        val y: Double
+        when {
+            this.angle == other.angle -> throw IllegalArgumentException("Lines are parallel or overlapping")
+            this.angle == PI / 2 -> {
+                x = -this.b
+                y = (other.b + x * sin(other.angle)) / cos(other.angle)
+            }
+            this.angle == 0.0 -> {
+                y = this.b
+                x = (y * cos(other.angle) - other.b) / sin(other.angle)
+            }
+            other.angle == PI / 2 -> {
+                x = -other.b
+                y = (this.b + x * sin(this.angle)) / cos(this.angle)
+            }
+            other.angle == 0.0 -> {
+                y = other.b
+                x = (y * cos(this.angle) - this.b) / sin(this.angle)
+            }
+            else -> {
+                x = (other.b / cos(other.angle) - this.b / cos(this.angle)) / (tan(this.angle) - tan(other.angle))
+                y = (this.b + x * sin(this.angle)) / cos(this.angle)
+            }
+        }
+        return Point(x, y)
+    }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 
@@ -206,14 +238,28 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = TODO()
+fun lineBySegment(s: Segment): Line {
+    val angle: Double
+    angle = when {
+        s.begin.x == s.end.x -> PI / 2
+        s.begin.y == s.end.y -> 0.0
+        else -> {
+            val upper = listOf(s.end, s.begin).maxBy { it.y }
+            val lower = listOf(s.end, s.begin).minBy { it.y }
+            val verticalCathetus = upper!!.y - lower!!.y
+            val horizontalCathetus = upper.x - lower.x
+            asin(verticalCathetus / sqrt(sqr(horizontalCathetus) + sqr(verticalCathetus)))
+        }
+    }
+    return Line(s.begin, angle)
+}
 
 /**
  * Средняя
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point) = lineBySegment(Segment(a, b))
 
 /**
  * Сложная
