@@ -239,7 +239,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  * Построить прямую по отрезку
  */
 fun lineBySegment(s: Segment): Line {
-    val angle: Double
+    var angle: Double
     angle = when {
         s.begin.x == s.end.x -> PI / 2
         s.begin.y == s.end.y -> 0.0
@@ -251,6 +251,8 @@ fun lineBySegment(s: Segment): Line {
             asin(verticalCathetus / sqrt(sqr(horizontalCathetus) + sqr(verticalCathetus)))
         }
     }
+    if (angle >= PI)
+        angle -= PI
     return Line(s.begin, angle)
 }
 
