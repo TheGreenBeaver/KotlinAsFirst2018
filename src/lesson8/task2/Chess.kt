@@ -65,6 +65,7 @@ fun square(notation: String) =
  */
 fun rookMoveNumber(start: Square, end: Square) =
         when {
+            !start.inside() || end.inside() -> throw IllegalArgumentException("Non-existent square")
             start == end -> 0
             start.column == end.column || start.row == end.row -> 1
             else -> 2
