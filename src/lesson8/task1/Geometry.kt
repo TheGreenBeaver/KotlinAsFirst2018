@@ -9,7 +9,7 @@ import kotlin.math.*
  */
 data class Point(val x: Double, val y: Double) {
     /**
-     * Примр
+     * Пример
      *
      * Рассчитать (по известной формуле) расстояние между двумя точками
      */
