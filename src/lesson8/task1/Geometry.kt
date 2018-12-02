@@ -248,7 +248,9 @@ fun lineBySegment(s: Segment): Line {
             val lower = listOf(s.end, s.begin).minBy { it.y }
             val verticalCathetus = upper!!.y - lower!!.y
             val horizontalCathetus = upper.x - lower.x
-            asin(verticalCathetus / sqrt(sqr(horizontalCathetus) + sqr(verticalCathetus)))
+            val hipot = sqrt(sqr(horizontalCathetus) + sqr(verticalCathetus))
+            val cos = horizontalCathetus / hipot
+            acos(cos)
         }
     }
     if (angle >= PI)
