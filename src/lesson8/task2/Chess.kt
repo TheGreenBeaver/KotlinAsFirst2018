@@ -57,7 +57,7 @@ fun square(notation: String) =
  * xx.xxххх
  * xx.xxххх
  *
- * Если клетки start и end совпадают, вернуть 0.
+ * Если клети start и end совпадают, вернуть 0.
  * Если любая из клеток некорректна, бросить IllegalArgumentException().
  *
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
